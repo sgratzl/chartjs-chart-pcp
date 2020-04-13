@@ -4,6 +4,22 @@ Chart.defaults.global.elements.lineSegment = Chart.defaults.global.elements.line
 
 export const LineSegment = (Chart.elements.LineSegment = Chart.Element.extend({
   _type: 'lineSegment',
+  inRange(mouseX, mouseY) {
+    return false; // inRange(this._view, mouseX, mouseY);
+  },
+
+  inLabelRange(mouseX, mouseY) {
+    var vm = this._view;
+    return false; // isVertical(vm) ? inRange(vm, mouseX, null) : inRange(vm, null, mouseY);
+  },
+
+  inXRange(mouseX) {
+    return false; // inRange(this._view, mouseX, null);
+  },
+
+  inYRange(mouseY) {
+    return false; // inRange(this._view, null, mouseY);
+  },
 
   draw() {
     const vm = this._view;

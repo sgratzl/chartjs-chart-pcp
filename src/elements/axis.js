@@ -19,8 +19,12 @@ export const LinearAxis = (Chart.elements.LinearAxis = superClassC.extend({
     this.options = Chart.helpers.merge({}, [this.chart.options.elements.linearAxis]);
   },
   update() {
-    const w = this._model.right - this._model.left;
+    const w = this._model.axisWidth;
     const h = this._model.bottom - this._model.top;
+    this.left = this._model.x0 - w / 2;
+    this.right = this._model.x0 + w / 2;
+    this.top = this._model.top;
+    this.bottom = this._model.bottom;
     superClass.update.call(this, w, h);
   },
   draw() {
@@ -28,12 +32,14 @@ export const LinearAxis = (Chart.elements.LinearAxis = superClassC.extend({
     // update(w, h, margins)
     // scale.mergeTicksOptions();
     // left,right,top,bottom,width,height
-    superClass.draw.call(this, {
-      left: 0,
-      top: 0,
-      right: this._view.width,
-      bottom: this._view.height,
-    });
+
+    const w = this._view.axisWidth;
+    this.left = this._view.x0 - w / 2;
+    this.right = this._view.x0 + w / 2;
+    this.top = this._view.top;
+    this.bottom = this._view.bottom;
+    this.height = this.bottom - this.top;
+    superClass.draw.call(this, this._view);
   },
 
   inRange(mouseX, mouseY) {

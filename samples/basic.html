@@ -23,15 +23,17 @@
             })),
           };
           const dataRow = {
-            labels: mtcars.map((c) => c.model),
+            xLabels: attrs,
+            yLabels: mtcars.map((c) => c.model),
             datasets: attrs.map((attr) => ({
               label: attr,
+              yAxisID: attr,
               data: mtcars.map((c) => c[attr]),
             })),
           };
           const chart = new Chart(document.getElementById('canvas').getContext('2d'), {
             type: 'pcp',
-            data: dataColumn,
+            data: dataRow,
             options: {},
           });
         });

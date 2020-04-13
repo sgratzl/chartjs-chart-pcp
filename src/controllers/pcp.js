@@ -34,7 +34,8 @@ export const ParallelCoordinates = (Chart.controllers.pcp = Chart.DatasetControl
   _datasetElementOptions: ['axisWidth'],
 
   linkScales() {
-    this.getDataset().yAxisID = 'x';
+    const ds = this.getDataset();
+    ds.yAxisID = ds.label;
     superClass.linkScales.call(this);
   },
 
@@ -82,9 +83,21 @@ export const ParallelCoordinates = (Chart.controllers.pcp = Chart.DatasetControl
 
   updateAxis(axis) {
     axis._configure();
-    const m = this._resolveDatasetElementOptions(axis);
-    Object.assign(m, this.chart.chartArea);
-    axis._model = m;
+    const options = this._resolveDatasetElementOptions(axis);
+    const datasetIndex = this.index;
+
+    const xScale = this._getIndexScale();
+    const x0 = xScale.getPixelForValue(undefined, datasetIndex);
+
+    axis.id = this.getDataset().label;
+    axis._model = Object.assign(
+      {
+        x0,
+        top: this.chart.chartArea.top,
+        bottom: this.chart.chartArea.bottom,
+      },
+      options
+    );
     axis.update();
     axis.pivot();
   },
@@ -99,14 +112,15 @@ export const ParallelCoordinates = (Chart.controllers.pcp = Chart.DatasetControl
     const options = this._resolveDataElementOptions(line, index);
 
     const xScale = this._getIndexScale();
-
-    const x0 = xScale.getPixelForValue(undefined, datasetIndex - 1);
-    const x1 = xScale.getPixelForValue(undefined, datasetIndex);
-
     const yScale0 = this.chart.getDatasetMeta(datasetIndex - 1).dataset;
     const yScale1 = meta.dataset;
 
-    const y0 = reset ? yScale0.getBasePixel() : yScale0.getPixelForValue(value, index, datasetIndex - 1);
+    const x0 = xScale.getPixelForValue(undefined, datasetIndex - 1) + yScale0.width;
+    const x1 = xScale.getPixelForValue(undefined, datasetIndex) + yScale1.width;
+
+    const y0 = reset
+      ? yScale0.getBasePixel()
+      : yScale0.getPixelForValue(this.chart.data.datasets[datasetIndex - 1].data[index], index, datasetIndex - 1);
     const y1 = reset ? yScale1.getBasePixel() : yScale1.getPixelForValue(value, index, datasetIndex);
 
     // Desired view properties
