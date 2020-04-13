@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+
+<head>
+  <script src="../node_modules/chart.js/dist/Chart.bundle.js"></script>
+  <!-- <script src="https://unpkg.com/chart.js@2.8/dist/Chart.bundle.js"></script>-->
+  <script src="../build/Chart.PCP.js"></script>
+</head>
+
+<body>
+  <div style="width: 75%;">
+    <canvas id="canvas" style="border: 1px solid black"></canvas>
+  </div>
+  <script>
+    const chart = new Chart(document.getElementById("canvas").getContext("2d"), {
+      type: 'pcp',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'X',
+          data: [],
+        }]
+      },
+      options: {
+        legend: {
+          display: false
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>
