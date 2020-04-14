@@ -12,6 +12,8 @@ Chart.js module for charting parallel coordinate plots (PCPs). Adding new chart 
 
 ![MTCars Tooltip](https://user-images.githubusercontent.com/4129778/79225877-b9a6dc00-7e5d-11ea-8dd4-ee554ebb6385.png)
 
+![MTCars Tension](https://user-images.githubusercontent.com/4129778/79236173-e9a9ab80-7e6c-11ea-9f3c-28c4a3a79406.png)
+
 ## Install
 
 ```bash
@@ -55,6 +57,12 @@ Two new elements were added: `lineSegment` as a subclass of line for a line segm
 interface ILineSegmentOptions {
   // all options from
   // https://www.chartjs.org/docs/latest/charts/line.html#line-styling
+
+  /**
+   * line tension > 0 (e.g., 0.3) to create bezier curves
+   * @default 0
+   */
+  tension: number;
 }
 ```
 
