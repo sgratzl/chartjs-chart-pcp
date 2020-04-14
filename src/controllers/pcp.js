@@ -49,14 +49,33 @@ export const ParallelCoordinates = (Chart.controllers.pcp = Chart.DatasetControl
     return this.getMeta().dataset;
   },
 
+  _getPreviousDataSetMeta() {
+    for (let position = this.index - 1; position >= 0; position--) {
+      const meta = this.chart.getDatasetMeta(position);
+      if (!meta.hidden) {
+        return meta;
+      }
+    }
+    return null;
+  },
+
+  _getVisibleDatasetIndex(index) {
+    let visibleIndex = index;
+    for (let position = index - 1; position >= 0; position--) {
+      const meta = this.chart.getDatasetMeta(position);
+      if (meta.hidden) {
+        visibleIndex--;
+      }
+    }
+    return visibleIndex;
+  },
+
   update(reset) {
     const meta = this.getMeta();
-    // TODO
-
     const axis = meta.dataset;
     this.updateAxis(axis, reset);
 
-    if (this.index === 0) {
+    if (!this._getPreviousDataSetMeta()) {
       return;
     }
     const elements = meta.data || [];
@@ -75,7 +94,7 @@ export const ParallelCoordinates = (Chart.controllers.pcp = Chart.DatasetControl
       meta.dataset.draw();
     }
 
-    if (this.index === 0) {
+    if (!this._getPreviousDataSetMeta()) {
       return;
     }
     elements.forEach((elem) => elem.draw());
@@ -84,12 +103,12 @@ export const ParallelCoordinates = (Chart.controllers.pcp = Chart.DatasetControl
   updateAxis(axis) {
     axis._configure();
     const options = this._resolveDatasetElementOptions(axis);
-    const datasetIndex = this.index;
 
     const xScale = this._getIndexScale();
-    const x0 = xScale.getPixelForValue(undefined, datasetIndex);
+    const x0 = xScale.getPixelForValue(undefined, this._getVisibleDatasetIndex(this.index));
 
     axis.id = this.getDataset().label;
+    axis.options.position = this._getPreviousDataSetMeta() ? 'right' : 'left';
     axis._model = Object.assign(
       {
         x0,
@@ -104,24 +123,23 @@ export const ParallelCoordinates = (Chart.controllers.pcp = Chart.DatasetControl
 
   updateElement(line, index, reset) {
     const meta = this.getMeta();
-    const custom = line.custom || {};
+    const prev = this._getPreviousDataSetMeta();
     const dataset = this.getDataset();
-    const datasetIndex = this.index;
     const value = dataset.data[index];
 
     const options = this._resolveDataElementOptions(line, index);
 
     const xScale = this._getIndexScale();
-    const yScale0 = this.chart.getDatasetMeta(datasetIndex - 1).dataset;
+    const yScale0 = prev.dataset;
     const yScale1 = meta.dataset;
 
-    const x0 = xScale.getPixelForValue(undefined, datasetIndex - 1) + yScale0.width;
-    const x1 = xScale.getPixelForValue(undefined, datasetIndex) + yScale1.width;
+    const x0 = xScale.getPixelForValue(undefined, this._getVisibleDatasetIndex(prev.index));
+    const x1 = xScale.getPixelForValue(undefined, this._getVisibleDatasetIndex(meta.index));
 
     const y0 = reset
       ? yScale0.getBasePixel()
-      : yScale0.getPixelForValue(this.chart.data.datasets[datasetIndex - 1].data[index], index, datasetIndex - 1);
-    const y1 = reset ? yScale1.getBasePixel() : yScale1.getPixelForValue(value, index, datasetIndex);
+      : yScale0.getPixelForValue(this.chart.data.datasets[prev.index].data[index], index, prev.index);
+    const y1 = reset ? yScale1.getBasePixel() : yScale1.getPixelForValue(value, index, meta.index);
 
     // Desired view properties
     line._model = Object.assign(

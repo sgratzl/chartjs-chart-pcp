@@ -15,14 +15,7 @@
         .then((r) => r.json())
         .then((mtcars) => {
           const attrs = ['mpg', 'hp', 'wt'];
-          const dataColumn = {
-            labels: attrs,
-            datasets: mtcars.map((c) => ({
-              label: c.model,
-              data: attrs.map((attr) => c[attr]),
-            })),
-          };
-          const dataRow = {
+          const data = {
             labels: mtcars.map((c) => c.model),
             datasets: attrs.map((attr) => ({
               label: attr,
@@ -31,7 +24,7 @@
           };
           const chart = new Chart(document.getElementById('canvas').getContext('2d'), {
             type: 'pcp',
-            data: dataRow,
+            data: data,
             options: {},
           });
         });

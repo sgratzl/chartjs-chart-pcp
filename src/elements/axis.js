@@ -2,9 +2,12 @@ import * as Chart from 'chart.js';
 
 Chart.defaults.global.elements.linearAxis = Object.assign(
   {
-    axisWidth: 30,
+    axisWidth: 40,
   },
-  Chart.scaleService.getScaleDefaults('linear')
+  Chart.scaleService.getScaleDefaults('linear'),
+  {
+    position: 'right',
+  }
 );
 
 const superClassC = Chart.scaleService.getScaleConstructor('linear');
@@ -21,25 +24,36 @@ export const LinearAxis = (Chart.elements.LinearAxis = superClassC.extend({
   update() {
     const w = this._model.axisWidth;
     const h = this._model.bottom - this._model.top;
-    this.left = this._model.x0 - w / 2;
-    this.right = this._model.x0 + w / 2;
+    this.left = 0;
+    this.right = w;
     this.top = this._model.top;
     this.bottom = this._model.bottom;
+
     superClass.update.call(this, w, h);
+
+    // computed and sync again
+    // this._model.axisWidth = this.width;
+    // this.left = 0;
+    // this.right = w;
+    this.top = this._model.top;
+    this.bottom = this._model.bottom;
+    this._configure();
   },
   draw() {
     // _configure;
     // update(w, h, margins)
     // scale.mergeTicksOptions();
     // left,right,top,bottom,width,height
+    this.ctx.save();
 
     const w = this._view.axisWidth;
-    this.left = this._view.x0 - w / 2;
-    this.right = this._view.x0 + w / 2;
-    this.top = this._view.top;
-    this.bottom = this._view.bottom;
-    this.height = this.bottom - this.top;
+    if (this.options.position === 'left') {
+      this.ctx.translate(this._view.x0 - w, 0);
+    } else {
+      this.ctx.translate(this._view.x0, 0);
+    }
     superClass.draw.call(this, this._view);
+    this.ctx.restore();
   },
 
   inRange(mouseX, mouseY) {
