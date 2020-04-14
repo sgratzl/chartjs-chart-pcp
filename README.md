@@ -89,3 +89,4 @@ npm run build
 [npm-url]: https://npmjs.org/package/chartjs-chart-pcp
 [github-actions-image]: https://github.com/sgratzl/chartjs-chart-pcp/workflows/ci/badge.svg
 [github-actions-url]: https://github.com/sgratzl/chartjs-chart-pcp/actions
+[codepen]: https://img.shields.io/badge/CodePen-open-blue?logo=codepen
