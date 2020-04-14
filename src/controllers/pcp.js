@@ -7,7 +7,7 @@ Chart.defaults.pcp = Chart.helpers.configMerge(Chart.defaults.global, {
   scales: {
     xAxes: [
       {
-        type: 'category',
+        type: 'pcp',
         offset: true,
         gridLines: {
           display: false,

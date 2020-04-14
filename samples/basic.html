@@ -23,11 +23,9 @@
             })),
           };
           const dataRow = {
-            xLabels: attrs,
-            yLabels: mtcars.map((c) => c.model),
+            labels: mtcars.map((c) => c.model),
             datasets: attrs.map((attr) => ({
               label: attr,
-              yAxisID: attr,
               data: mtcars.map((c) => c[attr]),
             })),
           };
