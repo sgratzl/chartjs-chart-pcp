@@ -19,6 +19,22 @@ Chart.defaults.pcp = Chart.helpers.configMerge(Chart.defaults.global, {
     ],
     yAxes: [],
   },
+
+  tooltips: {
+    callbacks: {
+      title() {
+        return '';
+      },
+      label(tooltipItem, data) {
+        const label = data.labels[tooltipItem.index];
+        const ds = data.datasets
+          .filter((d) => !d._meta || !d._meta.hidden)
+          .map((d) => `${d.label}=${d.data[tooltipItem.index]}`);
+
+        return `${label}(${ds.join(', ')})`;
+      },
+    },
+  },
 });
 
 const superClass = Chart.DatasetController.prototype;

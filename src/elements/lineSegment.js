@@ -41,6 +41,11 @@ export const LineSegment = (Chart.elements.LineSegment = Chart.Element.extend({
       padding: vm.borderWidth,
     };
   },
+
+  hasValue() {
+    return typeof this._model.x0 === 'number';
+  },
+
   getCenterPoint() {
     const vm = this._view;
     return {
