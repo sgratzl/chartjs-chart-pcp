@@ -14,17 +14,17 @@
       fetch('https://raw.githubusercontent.com/derhuerst/mtcars/master/index.json')
         .then((r) => r.json())
         .then((mtcars) => {
-          const attrs = ['mpg', 'hp', 'wt'];
-          const data = {
-            labels: mtcars.slice(0, 2).map((c) => c.model),
-            datasets: attrs.map((attr) => ({
-              label: attr,
-              data: mtcars.slice(0, 2).map((c) => c[attr]),
-            })),
-          };
+          const attrs = ['mpg', 'hp', 'wt', 'qsec', 'gear', 'drat', 'disp', 'cyl', 'am'];
+
           const chart = new Chart(document.getElementById('canvas').getContext('2d'), {
             type: 'pcp',
-            data: data,
+            data: {
+              labels: mtcars.map((c) => c.model),
+              datasets: attrs.map((attr) => ({
+                label: attr,
+                data: mtcars.map((c) => c[attr]),
+              })),
+            },
             options: {},
           });
         });
