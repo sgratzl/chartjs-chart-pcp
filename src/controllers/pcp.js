@@ -52,6 +52,7 @@ export const ParallelCoordinates = (Chart.controllers.pcp = Chart.DatasetControl
     'hoverBackgroundColor',
     'hoverBorderColor',
     'hoverBorderWidth',
+    'tension',
   ],
   _datasetElementOptions: ['axisWidth'],
 
@@ -71,8 +72,18 @@ export const ParallelCoordinates = (Chart.controllers.pcp = Chart.DatasetControl
     return this.getMeta().dataset;
   },
 
-  _getPreviousDataSetMeta() {
-    for (let position = this.index - 1; position >= 0; position--) {
+  _getPreviousDataSetMeta(index = this.index) {
+    for (let position = index - 1; position >= 0; position--) {
+      const meta = this.chart.getDatasetMeta(position);
+      if (!meta.hidden) {
+        return meta;
+      }
+    }
+    return null;
+  },
+
+  _getNextDataSetMeta(index = this.index) {
+    for (let position = index + 1; position < this.chart.data.datasets.length; position++) {
       const meta = this.chart.getDatasetMeta(position);
       if (!meta.hidden) {
         return meta;
@@ -93,6 +104,8 @@ export const ParallelCoordinates = (Chart.controllers.pcp = Chart.DatasetControl
   },
 
   update(reset) {
+    // from front to back
+
     const meta = this.getMeta();
     const axis = meta.dataset;
     this.updateAxis(axis, reset);
@@ -109,6 +122,8 @@ export const ParallelCoordinates = (Chart.controllers.pcp = Chart.DatasetControl
   },
 
   draw() {
+    // from back to front
+
     const meta = this.getMeta();
     const elements = meta.data || [];
 
@@ -119,7 +134,9 @@ export const ParallelCoordinates = (Chart.controllers.pcp = Chart.DatasetControl
     if (!this._getPreviousDataSetMeta()) {
       return;
     }
-    elements.forEach((elem) => elem.draw());
+    elements.forEach((elem, i) => {
+      elem.draw();
+    });
   },
 
   updateAxis(axis) {
@@ -127,13 +144,13 @@ export const ParallelCoordinates = (Chart.controllers.pcp = Chart.DatasetControl
     const options = this._resolveDatasetElementOptions(axis);
 
     const xScale = this._getIndexScale();
-    const x0 = xScale.getPixelForValue(undefined, this._getVisibleDatasetIndex(this.index));
+    const x = xScale.getPixelForValue(undefined, this._getVisibleDatasetIndex(this.index));
 
     axis.id = this.getDataset().label;
     axis.options.position = this._getPreviousDataSetMeta() ? 'right' : 'left';
     axis._model = Object.assign(
       {
-        x0,
+        x,
         top: this.chart.chartArea.top,
         bottom: this.chart.chartArea.bottom,
       },
@@ -144,35 +161,53 @@ export const ParallelCoordinates = (Chart.controllers.pcp = Chart.DatasetControl
   },
 
   updateElement(line, index, reset) {
-    const meta = this.getMeta();
     const prev = this._getPreviousDataSetMeta();
-    const dataset = this.getDataset();
-    const value = dataset.data[index];
+    const prevprev = this._getPreviousDataSetMeta(prev.index);
+    const current = this.getMeta();
+    const next = this._getNextDataSetMeta();
 
     const options = this._resolveDataElementOptions(line, index);
 
     const xScale = this._getIndexScale();
-    const yScale0 = prev.dataset;
-    const yScale1 = meta.dataset;
 
-    const x0 = xScale.getPixelForValue(undefined, this._getVisibleDatasetIndex(prev.index));
-    const x1 = xScale.getPixelForValue(undefined, this._getVisibleDatasetIndex(meta.index));
+    const getPoint = (meta, defaultValue) => {
+      if (!meta) {
+        return defaultValue;
+      }
+      const x = xScale.getPixelForValue(undefined, this._getVisibleDatasetIndex(meta.index));
+      const yScale = meta.dataset;
+      const y = reset
+        ? yScale.getBasePixel()
+        : yScale.getPixelForValue(this.chart.data.datasets[meta.index].data[index], index, meta.index);
 
-    const y0 = reset
-      ? yScale0.getBasePixel()
-      : yScale0.getPixelForValue(this.chart.data.datasets[prev.index].data[index], index, prev.index);
-    const y1 = reset ? yScale1.getBasePixel() : yScale1.getPixelForValue(value, index, meta.index);
+      return { x, y };
+    };
+
+    const xy = getPoint(current);
+    const xy_prev = getPoint(prev, xy);
+
+    const model = {
+      x: xy_prev.x,
+      y: xy_prev.y,
+      x1: xy.x,
+      y1: xy.y,
+    };
+
+    if (options.tension) {
+      const xy_prevprev = getPoint(prevprev, xy_prev);
+      const xy_next = getPoint(next, xy);
+
+      const controlPoints = Chart.helpers.splineCurve(xy_prevprev, xy_prev, xy, options.tension);
+      const controlPoints1 = Chart.helpers.splineCurve(xy_prev, xy, xy_next, options.tension);
+
+      model.xCPn = controlPoints.next.x;
+      model.yCPn = controlPoints.next.y;
+      model.xCPp1 = controlPoints1.previous.x;
+      model.yCPp1 = controlPoints1.previous.y;
+    }
 
     // Desired view properties
-    line._model = Object.assign(
-      {
-        x0,
-        x1,
-        y0,
-        y1,
-      },
-      options
-    );
+    line._model = Object.assign(model, options);
   },
 
   _findOtherSegments(element) {

@@ -36,9 +36,9 @@ function createScale(type, superClassC) {
 
         const w = this._view.axisWidth;
         if (this.options.position === 'left') {
-          this.ctx.translate(this._view.x0 - w, 0);
+          this.ctx.translate(this._view.x - w, 0);
         } else {
-          this.ctx.translate(this._view.x0, 0);
+          this.ctx.translate(this._view.x, 0);
         }
         superClass.draw.call(this, this._view);
         this.ctx.restore();

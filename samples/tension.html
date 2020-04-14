@@ -25,7 +25,13 @@
                 data: mtcars.map((c) => c[attr]),
               })),
             },
-            options: {},
+            options: {
+              elements: {
+                lineSegment: {
+                  tension: 0.3,
+                },
+              },
+            },
           });
         });
     </script>

@@ -4,6 +4,7 @@ Chart.defaults.global.elements.lineSegment = Object.assign({}, Chart.defaults.gl
   hoverBorderWidth: 4,
   hoverBorderColor: 'rgba(0,0,0,0.8)',
   borderCapStyle: 'round',
+  tension: 0,
 });
 
 export const LineSegment = (Chart.elements.LineSegment = Chart.Element.extend({
@@ -11,21 +12,22 @@ export const LineSegment = (Chart.elements.LineSegment = Chart.Element.extend({
   _getLineParts() {
     const vm = this._view;
     // y = x * k + d
-    const k = (vm.y1 - vm.y0) / (vm.x1 - vm.x0);
-    const d = vm.y0 - vm.x0 * k;
+    const k = (vm.y1 - vm.y) / (vm.x1 - vm.x);
+    const d = vm.y - vm.x * k;
     return { d, k };
   },
   inRange(mouseX, mouseY) {
     const vm = this._view;
     const dk = this._getLineParts();
     const targetY = mouseX * dk.k + dk.d;
+    const targetX = (mouseY - dk.d) / dk.k + dk.d;
     const range = this._view.borderWidth * 2;
     return (
-      Math.abs(mouseY - targetY) < range &&
-      mouseX + range >= vm.x0 &&
+      (Math.abs(mouseY - targetY) < range || Math.abs(mouseX - targetX) < range) &&
+      mouseX + range >= vm.x &&
       mouseX - range <= vm.x1 &&
-      mouseY + range >= Math.min(vm.y0, vm.y1) &&
-      mouseY - range <= Math.max(vm.y0, vm.y1)
+      mouseY + range >= Math.min(vm.y, vm.y1) &&
+      mouseY - range <= Math.max(vm.y, vm.y1)
     );
   },
 
@@ -36,34 +38,30 @@ export const LineSegment = (Chart.elements.LineSegment = Chart.Element.extend({
   tooltipPosition() {
     const vm = this._view;
     return {
-      x: (vm.x1 + vm.x0) / 2,
-      y: (vm.y1 + vm.y0) / 2,
+      x: (vm.x1 + vm.x) / 2,
+      y: (vm.y1 + vm.y) / 2,
       padding: vm.borderWidth,
     };
-  },
-
-  hasValue() {
-    return typeof this._model.x0 === 'number';
   },
 
   getCenterPoint() {
     const vm = this._view;
     return {
-      x: (vm.x1 + vm.x0) / 2,
-      y: (vm.y1 + vm.y0) / 2,
+      x: (vm.x1 + vm.x) / 2,
+      y: (vm.y1 + vm.y) / 2,
     };
   },
 
   inXRange(mouseX) {
     const vm = this._view;
     const range = this._view.borderWidth * 2;
-    return mouseX + range >= vm.x0 && mouseX - range <= vm.x1;
+    return mouseX + range >= vm.x && mouseX - range <= vm.x1;
   },
 
   inYRange(mouseY) {
     const vm = this._view;
     const range = this._view.borderWidth * 2;
-    return mouseY + range >= Math.min(vm.y0, vm.y1) && mouseY - range <= Math.max(vm.y0, vm.y1);
+    return mouseY + range >= Math.min(vm.y, vm.y1) && mouseY - range <= Math.max(vm.y, vm.y1);
   },
 
   draw() {
@@ -91,9 +89,12 @@ export const LineSegment = (Chart.elements.LineSegment = Chart.Element.extend({
     // Stroke Line
     ctx.beginPath();
 
-    // TODO support bezier curves
-    ctx.moveTo(vm.x0, vm.y0);
-    ctx.lineTo(vm.x1, vm.y1);
+    ctx.moveTo(vm.x, vm.y);
+    if (vm.tension) {
+      ctx.bezierCurveTo(vm.xCPn, vm.yCPn, vm.xCPp1, vm.yCPp1, vm.x1, vm.y1);
+    } else {
+      ctx.lineTo(vm.x1, vm.y1);
+    }
 
     ctx.stroke();
     ctx.restore();
