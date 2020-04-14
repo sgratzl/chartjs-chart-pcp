@@ -53,6 +53,7 @@
     "build:prod": "npm run build:dev && uglifyjs build/Chart.PCP.js -c -m -o build/Chart.PCP.min.js",
     "prebuild": "npm run clean && npm test",
     "build": "npm run build:prod",
+    "format": "prettier --write samples src package.json *.js README.md",
     "preversion": "npm run test",
     "prepare": "npm run build:dev",
     "prepublishOnly": "npm run build:prod",
