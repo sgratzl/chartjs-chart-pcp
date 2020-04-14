@@ -1,165 +1,64 @@
 import * as Chart from 'chart.js';
 
-Chart.defaults.global.elements.linearAxis = Object.assign(
-  {
-    axisWidth: 40,
-  },
-  Chart.scaleService.getScaleDefaults('linear'),
-  {
-    position: 'right',
-  }
+const defaults = {
+  axisWidth: 40,
+  position: 'right',
+};
+
+function createScale(type, superClassC) {
+  const superClass = superClassC.prototype;
+  return superClassC.extend(
+    Object.assign({
+      _type: type,
+      initialize() {
+        superClass.initialize.call(this);
+        const chart = this._chart;
+        this.chart = chart;
+        this.ctx = chart.ctx;
+        this.options = Chart.helpers.merge({}, [this.chart.options.elements.linearAxis]);
+      },
+      update() {
+        const w = this._model.axisWidth;
+        const h = this._model.bottom - this._model.top;
+        this.left = 0;
+        this.right = w;
+        this.top = this._model.top;
+        this.bottom = this._model.bottom;
+
+        superClass.update.call(this, w, h);
+
+        this.top = this._model.top;
+        this.bottom = this._model.bottom;
+        this._configure();
+      },
+      draw() {
+        this.ctx.save();
+
+        const w = this._view.axisWidth;
+        if (this.options.position === 'left') {
+          this.ctx.translate(this._view.x0 - w, 0);
+        } else {
+          this.ctx.translate(this._view.x0, 0);
+        }
+        superClass.draw.call(this, this._view);
+        this.ctx.restore();
+      },
+    })
+  );
+}
+
+Chart.defaults.global.elements.linearAxis = Object.assign({}, Chart.scaleService.getScaleDefaults('linear'), defaults);
+export const LinearAxis = (Chart.elements.LinearAxis = createScale(
+  'linearAxis',
+  Chart.scaleService.getScaleConstructor('linear')
+));
+
+Chart.defaults.global.elements.logarithmicAxis = Object.assign(
+  {},
+  Chart.scaleService.getScaleDefaults('logarithmic'),
+  defaults
 );
-
-const superClassC = Chart.scaleService.getScaleConstructor('linear');
-const superClass = superClassC.prototype;
-export const LinearAxis = (Chart.elements.LinearAxis = superClassC.extend({
-  _type: 'linearAxis',
-  initialize() {
-    superClass.initialize.call(this);
-    const chart = this._chart;
-    this.chart = chart;
-    this.ctx = chart.ctx;
-    this.options = Chart.helpers.merge({}, [this.chart.options.elements.linearAxis]);
-  },
-  update() {
-    const w = this._model.axisWidth;
-    const h = this._model.bottom - this._model.top;
-    this.left = 0;
-    this.right = w;
-    this.top = this._model.top;
-    this.bottom = this._model.bottom;
-
-    superClass.update.call(this, w, h);
-
-    // computed and sync again
-    // this._model.axisWidth = this.width;
-    // this.left = 0;
-    // this.right = w;
-    this.top = this._model.top;
-    this.bottom = this._model.bottom;
-    this._configure();
-  },
-  draw() {
-    // _configure;
-    // update(w, h, margins)
-    // scale.mergeTicksOptions();
-    // left,right,top,bottom,width,height
-    this.ctx.save();
-
-    const w = this._view.axisWidth;
-    if (this.options.position === 'left') {
-      this.ctx.translate(this._view.x0 - w, 0);
-    } else {
-      this.ctx.translate(this._view.x0, 0);
-    }
-    superClass.draw.call(this, this._view);
-    this.ctx.restore();
-  },
-
-  inRange(mouseX, mouseY) {
-    return false; // inRange(this._view, mouseX, mouseY);
-  },
-
-  inLabelRange(mouseX, mouseY) {
-    var vm = this._view;
-    return false; // isVertical(vm) ? inRange(vm, mouseX, null) : inRange(vm, null, mouseY);
-  },
-
-  inXRange(mouseX) {
-    return false; // inRange(this._view, mouseX, null);
-  },
-
-  inYRange(mouseY) {
-    return false; // inRange(this._view, null, mouseY);
-  },
-}));
-
-Chart.defaults.global.elements.logarithmicAxis = Chart.scaleService.getScaleDefaults('logarithmic');
-
-export const LogarithmicAxis = (Chart.elements.LogarithmicAxis = Chart.Element.extend({
-  draw() {
-    // TODO
-  },
-}));
-
-// draw: function() {
-// 		var me = this;
-// 		var vm = me._view;
-// 		var ctx = me._chart.ctx;
-// 		var spanGaps = vm.spanGaps;
-// 		var points = me._children.slice(); // clone array
-// 		var globalDefaults = core_defaults.global;
-// 		var globalOptionLineElements = globalDefaults.elements.line;
-// 		var lastDrawnIndex = -1;
-// 		var closePath = me._loop;
-// 		var index, previous, currentVM;
-
-// 		if (!points.length) {
-// 			return;
-// 		}
-
-// 		if (me._loop) {
-// 			for (index = 0; index < points.length; ++index) {
-// 				previous = helpers$1.previousItem(points, index);
-// 				// If the line has an open path, shift the point array
-// 				if (!points[index]._view.skip && previous._view.skip) {
-// 					points = points.slice(index).concat(points.slice(0, index));
-// 					closePath = spanGaps;
-// 					break;
-// 				}
-// 			}
-// 			// If the line has a close path, add the first point again
-// 			if (closePath) {
-// 				points.push(points[0]);
-// 			}
-// 		}
-
-// 		ctx.save();
-
-// 		// Stroke Line Options
-// 		ctx.lineCap = vm.borderCapStyle || globalOptionLineElements.borderCapStyle;
-
-// 		// IE 9 and 10 do not support line dash
-// 		if (ctx.setLineDash) {
-// 			ctx.setLineDash(vm.borderDash || globalOptionLineElements.borderDash);
-// 		}
-
-// 		ctx.lineDashOffset = valueOrDefault$1(vm.borderDashOffset, globalOptionLineElements.borderDashOffset);
-// 		ctx.lineJoin = vm.borderJoinStyle || globalOptionLineElements.borderJoinStyle;
-// 		ctx.lineWidth = valueOrDefault$1(vm.borderWidth, globalOptionLineElements.borderWidth);
-// 		ctx.strokeStyle = vm.borderColor || globalDefaults.defaultColor;
-
-// 		// Stroke Line
-// 		ctx.beginPath();
-
-// 		// First point moves to it's starting position no matter what
-// 		currentVM = points[0]._view;
-// 		if (!currentVM.skip) {
-// 			ctx.moveTo(currentVM.x, currentVM.y);
-// 			lastDrawnIndex = 0;
-// 		}
-
-// 		for (index = 1; index < points.length; ++index) {
-// 			currentVM = points[index]._view;
-// 			previous = lastDrawnIndex === -1 ? helpers$1.previousItem(points, index) : points[lastDrawnIndex];
-
-// 			if (!currentVM.skip) {
-// 				if ((lastDrawnIndex !== (index - 1) && !spanGaps) || lastDrawnIndex === -1) {
-// 					// There was a gap and this is the first point after the gap
-// 					ctx.moveTo(currentVM.x, currentVM.y);
-// 				} else {
-// 					// Line to next point
-// 					helpers$1.canvas.lineTo(ctx, previous._view, currentVM);
-// 				}
-// 				lastDrawnIndex = index;
-// 			}
-// 		}
-
-// 		if (closePath) {
-// 			ctx.closePath();
-// 		}
-
-// 		ctx.stroke();
-// 		ctx.restore();
-// 	}
-// });
+export const LogarithmicAxis = (Chart.elements.LogarithmicAxis = createScale(
+  'logarithmicAxis',
+  Chart.scaleService.getScaleConstructor('logarithmic')
+));

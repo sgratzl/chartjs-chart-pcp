@@ -16,10 +16,10 @@
         .then((mtcars) => {
           const attrs = ['mpg', 'hp', 'wt'];
           const data = {
-            labels: mtcars.map((c) => c.model),
+            labels: mtcars.slice(0, 2).map((c) => c.model),
             datasets: attrs.map((attr) => ({
               label: attr,
-              data: mtcars.map((c) => c[attr]),
+              data: mtcars.slice(0, 2).map((c) => c[attr]),
             })),
           };
           const chart = new Chart(document.getElementById('canvas').getContext('2d'), {

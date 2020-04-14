@@ -4,6 +4,9 @@ import * as Chart from 'chart.js';
 import { LinearAxis } from '../elements';
 
 Chart.defaults.pcp = Chart.helpers.configMerge(Chart.defaults.global, {
+  hover: {
+    mode: 'single',
+  },
   scales: {
     xAxes: [
       {
@@ -30,6 +33,9 @@ export const ParallelCoordinates = (Chart.controllers.pcp = Chart.DatasetControl
     'borderDashOffset',
     'borderJoinStyle',
     'borderWidth',
+    'hoverBackgroundColor',
+    'hoverBorderColor',
+    'hoverBorderWidth',
   ],
   _datasetElementOptions: ['axisWidth'],
 
@@ -151,5 +157,73 @@ export const ParallelCoordinates = (Chart.controllers.pcp = Chart.DatasetControl
       },
       options
     );
+  },
+
+  _findOtherSegments(element) {
+    const index = element._index;
+    const r = [];
+    const metas = this.chart._getSortedVisibleDatasetMetas();
+    metas.forEach((meta) => {
+      if (meta.controller._type !== this._type || meta.controller === this) {
+        return;
+      }
+      const elem = meta.data[index];
+      if (!elem._model) {
+        return;
+      }
+      r.push(elem);
+    });
+    return r;
+  },
+
+  removeHoverStyle(element) {
+    superClass.removeHoverStyle.call(this, element);
+
+    this._findOtherSegments(element).forEach((elem) => {
+      superClass.removeHoverStyle.call(this, elem);
+    });
+  },
+
+  _setHoverStyleImpl(element) {
+    const dataset = this.chart.data.datasets[element._datasetIndex];
+    const index = element._index;
+    const custom = element.custom || {};
+    const model = element._model;
+    const getHoverColor = Chart.helpers.getHoverColor;
+
+    element.$previousStyle = {
+      backgroundColor: model.backgroundColor,
+      borderColor: model.borderColor,
+      borderWidth: model.borderWidth,
+    };
+
+    model.backgroundColor = Chart.helpers.options.resolve(
+      [
+        custom.hoverBackgroundColor,
+        dataset.hoverBackgroundColor,
+        model.hoverBackgroundColor,
+        getHoverColor(model.backgroundColor),
+      ],
+      undefined,
+      index
+    );
+    model.borderColor = Chart.helpers.options.resolve(
+      [custom.hoverBorderColor, dataset.hoverBorderColor, model.hoverBorderColor, getHoverColor(model.borderColor)],
+      undefined,
+      index
+    );
+    model.borderWidth = Chart.helpers.options.resolve(
+      [custom.hoverBorderWidth, dataset.hoverBorderWidth, model.hoverBorderWidth, model.borderWidth],
+      undefined,
+      index
+    );
+  },
+
+  setHoverStyle(element) {
+    this._setHoverStyleImpl(element);
+
+    this._findOtherSegments(element).forEach((elem) => {
+      this._setHoverStyleImpl(elem);
+    });
   },
 }));
