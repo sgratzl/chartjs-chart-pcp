@@ -100,7 +100,7 @@ export class ParallelCoordinates extends DatasetController {
       }
       const x = xScale.getPixelForTick(metaIndex);
       const yScale = m.vScale;
-      const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(m._parsed[index]);
+      const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(m._parsed[index][yScale.axis]);
 
       return { x, y };
     };
@@ -221,6 +221,14 @@ ParallelCoordinates.register = () => {
   defaults.set(ParallelCoordinates.id, {
     hover: {
       mode: 'single',
+    },
+    datasets: {
+      animation: {
+        numbers: {
+          type: 'number',
+          properties: ['x', 'y', 'x1', 'y1', 'axisWidth', 'xCPn', 'yCPn', 'xCPp1', 'yCPp1', 'borderWidth'],
+        },
+      },
     },
     scales: {
       x: {
