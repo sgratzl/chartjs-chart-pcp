@@ -8,13 +8,13 @@ Chart.js module for charting parallel coordinate plots (PCPs). Adding new chart 
 
 ![MTCars](https://user-images.githubusercontent.com/4129778/79225882-bad80900-7e5d-11ea-89cf-f59f30987882.png)
 
-[![Open in CodePen][codepen]](https://codepen.io/sgratzl/pen/OJyyoOw)
+[![Open in CodePen][codepen]](https://codepen.io/sgratzl/pen/wvKQvyM)
 
 ![MTCars Tooltip](https://user-images.githubusercontent.com/4129778/79225877-b9a6dc00-7e5d-11ea-8dd4-ee554ebb6385.png)
 
 ![MTCars Tension](https://user-images.githubusercontent.com/4129778/79236173-e9a9ab80-7e6c-11ea-9f3c-28c4a3a79406.png)
 
-[![Open in CodePen][codepen]](https://codepen.io/sgratzl/pen/jObbvZR)
+[![Open in CodePen][codepen]](https://codepen.io/sgratzl/pen/KKdrKZW)
 
 ## Install
 
