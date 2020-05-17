@@ -1,64 +1,60 @@
-import * as Chart from 'chart.js';
+import { scaleService, defaults } from 'chart.js';
 
-const defaults = {
-  axisWidth: 40,
-  position: 'right',
-};
+function BaseMixin(superClass) {
+  return class extends superClass {
+    constructor() {
+      super({});
+    }
+    update() {
+      const w = this.options.axisWidth;
+      // copy since it could return self
+      const props = Object.assign({}, this.getProps(['width', 'height', 'top', 'bottom', 'left', 'right']));
+      const h = props.bottom - props.top;
+      this.left = 0;
+      this.right = w;
+      this.top = props.top;
+      this.bottom = props.bottom;
 
-function createScale(type, superClassC) {
-  const superClass = superClassC.prototype;
-  return superClassC.extend(
-    Object.assign({
-      _type: type,
-      initialize() {
-        superClass.initialize.call(this);
-        const chart = this._chart;
-        this.chart = chart;
-        this.ctx = chart.ctx;
-        this.options = Chart.helpers.merge({}, [this.chart.options.elements.linearAxis]);
-      },
-      update() {
-        const w = this._model.axisWidth;
-        const h = this._model.bottom - this._model.top;
-        this.left = 0;
-        this.right = w;
-        this.top = this._model.top;
-        this.bottom = this._model.bottom;
+      super.update(w, h);
 
-        superClass.update.call(this, w, h);
+      this.top = props.top;
+      this.bottom = props.bottom;
+      this.configure();
+    }
+    draw(ctx) {
+      ctx.save();
+      const props = this.getProps(['x', 'width', 'height', 'top', 'bottom', 'left', 'right']);
 
-        this.top = this._model.top;
-        this.bottom = this._model.bottom;
-        this._configure();
-      },
-      draw() {
-        this.ctx.save();
-
-        const w = this._view.axisWidth;
-        if (this.options.position === 'left') {
-          this.ctx.translate(this._view.x - w, 0);
-        } else {
-          this.ctx.translate(this._view.x, 0);
-        }
-        superClass.draw.call(this, this._view);
-        this.ctx.restore();
-      },
-    })
-  );
+      const w = this.options.axisWidth;
+      if (this.options.position === 'left') {
+        ctx.translate(props.x - w, 0);
+      } else {
+        ctx.translate(props.x, 0);
+      }
+      super.draw(props);
+      ctx.restore();
+    }
+  };
 }
 
-Chart.defaults.global.elements.linearAxis = Object.assign({}, Chart.scaleService.getScaleDefaults('linear'), defaults);
-export const LinearAxis = (Chart.elements.LinearAxis = createScale(
-  'linearAxis',
-  Chart.scaleService.getScaleConstructor('linear')
-));
+const scaleDefaults = {
+  axisWidth: 10,
+  position: 'right',
+};
+export class LinearAxis extends BaseMixin(scaleService.getScaleConstructor('linear')) {}
+LinearAxis._type = 'linearAxis';
+LinearAxis.register = () => {
+  defaults.set('elements', {
+    [LinearAxis._type]: Object.assign({}, Chart.scaleService.getScaleDefaults('linear'), scaleDefaults),
+  });
+  return LinearAxis;
+};
 
-Chart.defaults.global.elements.logarithmicAxis = Object.assign(
-  {},
-  Chart.scaleService.getScaleDefaults('logarithmic'),
-  defaults
-);
-export const LogarithmicAxis = (Chart.elements.LogarithmicAxis = createScale(
-  'logarithmicAxis',
-  Chart.scaleService.getScaleConstructor('logarithmic')
-));
+export class LogarithmicAxis extends BaseMixin(scaleService.getScaleConstructor('logarithmic')) {}
+LogarithmicAxis._type = 'logarithmicAxis';
+LogarithmicAxis.register = () => {
+  defaults.set('elements', {
+    [LogarithmicAxis._type]: Object.assign({}, Chart.scaleService.getScaleDefaults('logarithmic'), scaleDefaults),
+  });
+  return LogarithmicAxis;
+};

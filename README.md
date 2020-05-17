@@ -4,7 +4,7 @@
 
 Chart.js module for charting parallel coordinate plots (PCPs). Adding new chart type: `pcp`.
 
-**Works only with Chart.js >= 2.9.0**
+**Works only with Chart.js >= 3.0.0**
 
 ![MTCars](https://user-images.githubusercontent.com/4129778/79225882-bad80900-7e5d-11ea-89cf-f59f30987882.png)
 
@@ -19,7 +19,7 @@ Chart.js module for charting parallel coordinate plots (PCPs). Adding new chart 
 ## Install
 
 ```bash
-npm install --save chart.js chartjs-chart-pcp
+npm install --save chart.js@next chartjs-chart-pcp@next
 ```
 
 ## Usage
@@ -80,11 +80,20 @@ interface ILinearAxisOptions {
 }
 ```
 
-## Building
+## Development Environment
 
 ```sh
-npm install
-npm run build
+npm i -g yarn
+yarn set version 2
+yarn
+yarn pnpify --sdk
+```
+
+### Building
+
+```sh
+yarn install
+yarn build
 ```
 
 [npm-image]: https://badge.fury.io/js/chartjs-chart-pcp.svg

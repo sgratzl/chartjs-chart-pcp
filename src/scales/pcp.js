@@ -1,22 +1,18 @@
-import * as Chart from 'chart.js';
+import { scaleService, helpers } from 'chart.js';
 
-const defaults = {};
-
-const superClassC = Chart.scaleService.getScaleConstructor('category');
-// const superClass = superClassC.prototype;
-
-export const PCPScale = superClassC.extend({
-  _getLabels() {
+export class PCPScale extends scaleService.getScaleConstructor('category') {
+  getLabels() {
     const datasets = this.chart.data.datasets;
-    return this._getMatchingVisibleMetas().map((meta) => {
+    return this.getMatchingVisibleMetas().map((meta) => {
       const ds = datasets[meta.index];
       return ds.label;
     });
-  },
-});
+  }
+}
 
-Chart.scaleService.registerScaleType(
-  'pcp',
-  PCPScale,
-  Chart.helpers.merge({}, [Chart.scaleService.getScaleDefaults('category'), defaults])
-);
+PCPScale.id = 'pcp';
+PCPScale.defaults = helpers.merge({}, [scaleService.getScaleDefaults('category'), {}]);
+PCPScale.register = () => {
+  scaleService.registerScale(PCPScale);
+  return PCPScale;
+};

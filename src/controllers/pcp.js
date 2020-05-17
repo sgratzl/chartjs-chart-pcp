@@ -1,212 +1,144 @@
-import * as Chart from 'chart.js';
-import { LinearAxis } from '../elements';
+import { helpers, defaults, DatasetController, controllers } from 'chart.js';
+import { LinearAxis, LineSegment } from '../elements';
+import { PCPScale } from '../scales';
 
-Chart.defaults.pcp = Chart.helpers.configMerge(Chart.defaults.global, {
-  hover: {
-    mode: 'single',
-  },
-  scales: {
-    xAxes: [
-      {
-        type: 'pcp',
-        offset: true,
-        gridLines: {
-          display: false,
-        },
-      },
-    ],
-    yAxes: [],
-  },
-
-  tooltips: {
-    callbacks: {
-      title() {
-        return '';
-      },
-      label(tooltipItem, data) {
-        const label = data.labels[tooltipItem.index];
-        const ds = data.datasets
-          .filter((d) => !d._meta || !d._meta.hidden)
-          .map((d) => `${d.label}=${d.data[tooltipItem.index]}`);
-
-        return `${label}(${ds.join(', ')})`;
-      },
-    },
-  },
-});
-
-const superClass = Chart.DatasetController.prototype;
-export const ParallelCoordinates = (Chart.controllers.pcp = Chart.DatasetController.extend({
-  datasetElementType: LinearAxis,
-  dataElementType: Chart.elements.LineSegment,
-  _dataElementOptions: [
-    'backgroundColor',
-    'borderCapStyle',
-    'borderColor',
-    'borderDash',
-    'borderDashOffset',
-    'borderJoinStyle',
-    'borderWidth',
-    'hoverBackgroundColor',
-    'hoverBorderColor',
-    'hoverBorderWidth',
-    'tension',
-  ],
-  _datasetElementOptions: ['axisWidth'],
-
+export class ParallelCoordinates extends DatasetController {
   linkScales() {
     const ds = this.getDataset();
     ds.yAxisID = ds.label;
-    superClass.linkScales.call(this);
-  },
+    super.linkScales();
+  }
 
   addElements() {
-    superClass.addElements.call(this);
-    const axis = this._getValueScale();
-    Object.assign(axis.options, this.getDataset().axis);
-  },
+    super.addElements(this);
+    const meta = this._cachedMeta;
+    const scale = meta.dataset;
+    meta.yScale = meta.vScale = scale;
+
+    scale.id = meta.yAxisID;
+    scale.axis = 'y';
+    scale.type = this.dataElementType.id;
+    scale.options = {}; // helpers.merge({}, [this.chart.options.elements[this.datasetElementType]]);
+    scale.chart = this.chart;
+    scale.ctx = this.chart.ctx;
+  }
 
   _getValueScale() {
-    return this.getMeta().dataset;
-  },
+    return this._cachedMeta.dataset;
+  }
 
-  _getPreviousDataSetMeta(index = this.index) {
-    for (let position = index - 1; position >= 0; position--) {
-      const meta = this.chart.getDatasetMeta(position);
-      if (!meta.hidden) {
-        return meta;
-      }
-    }
-    return null;
-  },
-
-  _getNextDataSetMeta(index = this.index) {
-    for (let position = index + 1; position < this.chart.data.datasets.length; position++) {
-      const meta = this.chart.getDatasetMeta(position);
-      if (!meta.hidden) {
-        return meta;
-      }
-    }
-    return null;
-  },
-
-  _getVisibleDatasetIndex(index) {
-    let visibleIndex = index;
-    for (let position = index - 1; position >= 0; position--) {
-      const meta = this.chart.getDatasetMeta(position);
-      if (meta.hidden) {
-        visibleIndex--;
-      }
-    }
-    return visibleIndex;
-  },
-
-  update(reset) {
+  update(mode) {
     // from front to back
 
-    const meta = this.getMeta();
-    const axis = meta.dataset;
-    this.updateAxis(axis, reset);
-
-    if (!this._getPreviousDataSetMeta()) {
+    const meta = this._cachedMeta;
+    meta._metas = this.chart.getSortedVisibleDatasetMetas();
+    meta._metaIndex = meta._metas.indexOf(meta);
+    if (meta._metaIndex < 0) {
       return;
     }
-    const elements = meta.data || [];
 
-    elements.forEach((elem, i) => {
-      this.updateElement(elem, i, reset);
-      elem.pivot();
-    });
-  },
+    const axis = meta.dataset;
+    this.updateAxis(axis, mode);
+
+    const elements = meta.data || [];
+    this.updateElements(elements, 0, mode);
+  }
 
   draw() {
     // from back to front
-
-    const meta = this.getMeta();
+    const meta = this._cachedMeta;
     const elements = meta.data || [];
-
-    if (meta.dataset) {
-      meta.dataset.draw();
-    }
-
-    if (!this._getPreviousDataSetMeta()) {
+    const ctx = this.chart.ctx;
+    if (meta._metaIndex < 0) {
       return;
     }
-    elements.forEach((elem, i) => {
-      elem.draw();
+
+    if (meta.dataset) {
+      meta.dataset.draw(ctx);
+    }
+    if (meta._metaIndex === 0) {
+      return;
+    }
+    elements.forEach((elem) => {
+      elem.draw(ctx);
     });
-  },
+  }
 
-  updateAxis(axis) {
-    axis._configure();
-    const options = this._resolveDatasetElementOptions(axis);
-
+  updateAxis(axis, mode) {
+    const meta = this._cachedMeta;
     const xScale = this._getIndexScale();
-    const x = xScale.getPixelForValue(undefined, this._getVisibleDatasetIndex(this.index));
+    const x = xScale.getPixelForTick(meta._metaIndex);
 
-    axis.id = this.getDataset().label;
-    axis.options.position = this._getPreviousDataSetMeta() ? 'right' : 'left';
-    axis._model = Object.assign(
-      {
-        x,
-        top: this.chart.chartArea.top,
-        bottom: this.chart.chartArea.bottom,
-      },
-      options
-    );
+    const properties = {
+      x,
+      top: this.chart.chartArea.top,
+      bottom: this.chart.chartArea.bottom,
+      options: helpers.merge({}, [
+        this.chart.options.elements[this.datasetElementType._type],
+        this.resolveDatasetElementOptions(),
+        {
+          position: meta._metaIndex > 0 ? 'right' : 'left',
+        },
+      ]),
+    };
+    super.updateElement(axis, undefined, properties, mode);
     axis.update();
-    axis.pivot();
-  },
+  }
 
-  updateElement(line, index, reset) {
-    const prev = this._getPreviousDataSetMeta();
-    const prevprev = this._getPreviousDataSetMeta(prev.index);
-    const current = this.getMeta();
-    const next = this._getNextDataSetMeta();
+  updateElements(rectangles, start, mode) {
+    const reset = mode === 'reset';
+    const meta = this._cachedMeta;
+    const xScale = meta.xScale;
 
-    const options = this._resolveDataElementOptions(line, index);
-
-    const xScale = this._getIndexScale();
-
-    const getPoint = (meta, defaultValue) => {
-      if (!meta) {
+    const firstOpts = this.resolveDataElementOptions(start, mode);
+    const sharedOptions = this.getSharedOptions(mode, rectangles[start], firstOpts);
+    const includeOptions = this.includeOptions(mode, sharedOptions);
+    const getPoint = (metaIndex, index, defaultValue) => {
+      const m = meta._metas[metaIndex];
+      if (!m) {
         return defaultValue;
       }
-      const x = xScale.getPixelForValue(undefined, this._getVisibleDatasetIndex(meta.index));
-      const yScale = meta.dataset;
-      const y = reset
-        ? yScale.getBasePixel()
-        : yScale.getPixelForValue(this.chart.data.datasets[meta.index].data[index], index, meta.index);
+      const x = xScale.getPixelForTick(metaIndex);
+      const yScale = m.vScale;
+      const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(m._parsed[index]);
 
       return { x, y };
     };
 
-    const xy = getPoint(current);
-    const xy_prev = getPoint(prev, xy);
+    for (let i = 0; i < rectangles.length; i++) {
+      const index = start + i;
+      const options = this.resolveDataElementOptions(index, mode);
 
-    const model = {
-      x: xy_prev.x,
-      y: xy_prev.y,
-      x1: xy.x,
-      y1: xy.y,
-    };
+      const xy = getPoint(meta._metaIndex, index);
+      const xy_prev = getPoint(meta._metaIndex - 1, index, xy);
 
-    if (options.tension) {
-      const xy_prevprev = getPoint(prevprev, xy_prev);
-      const xy_next = getPoint(next, xy);
+      const properties = {
+        x: xy_prev.x,
+        y: xy_prev.y,
+        x1: xy.x,
+        y1: xy.y,
+      };
 
-      const controlPoints = Chart.helpers.splineCurve(xy_prevprev, xy_prev, xy, options.tension);
-      const controlPoints1 = Chart.helpers.splineCurve(xy_prev, xy, xy_next, options.tension);
+      if (options.tension) {
+        const xy_prevprev = getPoint(meta._metaIndex - 2, xy_prev);
+        const xy_next = getPoint(meta._metaIndex + 1, xy);
 
-      model.xCPn = controlPoints.next.x;
-      model.yCPn = controlPoints.next.y;
-      model.xCPp1 = controlPoints1.previous.x;
-      model.yCPp1 = controlPoints1.previous.y;
+        const controlPoints = helpers.curve.splineCurve(xy_prevprev, xy_prev, xy, options.tension);
+        const controlPoints1 = helpers.curve.splineCurve(xy_prev, xy, xy_next, options.tension);
+
+        properties.xCPn = controlPoints.next.x;
+        properties.yCPn = controlPoints.next.y;
+        properties.xCPp1 = controlPoints1.previous.x;
+        properties.yCPp1 = controlPoints1.previous.y;
+      }
+
+      if (includeOptions) {
+        properties.options = options;
+      }
+      this.updateElement(rectangles[i], index, properties, mode);
     }
-
-    // Desired view properties
-    line._model = Object.assign(model, options);
-  },
+    this.updateSharedOptions(sharedOptions, mode);
+  }
 
   _findOtherSegments(element) {
     const index = element._index;
@@ -223,15 +155,15 @@ export const ParallelCoordinates = (Chart.controllers.pcp = Chart.DatasetControl
       r.push(elem);
     });
     return r;
-  },
+  }
 
-  removeHoverStyle(element) {
+  removeHoverStyleXX(element) {
     superClass.removeHoverStyle.call(this, element);
 
     this._findOtherSegments(element).forEach((elem) => {
       superClass.removeHoverStyle.call(this, elem);
     });
-  },
+  }
 
   _setHoverStyleImpl(element) {
     const dataset = this.chart.data.datasets[element._datasetIndex];
@@ -266,13 +198,55 @@ export const ParallelCoordinates = (Chart.controllers.pcp = Chart.DatasetControl
       undefined,
       index
     );
-  },
+  }
 
-  setHoverStyle(element) {
+  setHoverStyleXX(element) {
     this._setHoverStyleImpl(element);
 
     this._findOtherSegments(element).forEach((elem) => {
       this._setHoverStyleImpl(elem);
     });
-  },
-}));
+  }
+}
+
+ParallelCoordinates.id = 'pcp';
+ParallelCoordinates.register = () => {
+  ParallelCoordinates.prototype.datasetElementType = LinearAxis.register();
+  ParallelCoordinates.prototype.datasetElementOptions = ['axisWidth'];
+  ParallelCoordinates.prototype.dataElementType = LineSegment.register();
+  ParallelCoordinates.prototype.dataElementOptions = controllers.line.prototype.datasetElementOptions;
+
+  controllers[ParallelCoordinates.id] = ParallelCoordinates;
+
+  defaults.set(ParallelCoordinates.id, {
+    hover: {
+      mode: 'single',
+    },
+    scales: {
+      x: {
+        type: PCPScale.register().id,
+        offset: true,
+        gridLines: {
+          drawBorder: false,
+          display: false,
+        },
+      },
+    },
+
+    tooltips: {
+      callbacks: {
+        title() {
+          return '';
+        },
+        label(tooltipItem, data) {
+          const label = data.labels[tooltipItem.index];
+          const ds = data.datasets
+            .filter((d) => !d._meta || !d._meta.hidden)
+            .map((d) => `${d.label}=${d.data[tooltipItem.index]}`);
+
+          return `${label}(${ds.join(', ')})`;
+        },
+      },
+    },
+  });
+};
