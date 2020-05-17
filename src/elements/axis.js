@@ -41,6 +41,7 @@ const scaleDefaults = {
   axisWidth: 10,
   position: 'right',
 };
+
 export class LinearAxis extends BaseMixin(scaleService.getScaleConstructor('linear')) {}
 LinearAxis._type = 'linearAxis';
 LinearAxis.register = () => {

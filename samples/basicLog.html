@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://unpkg.com/chart.js@3.0.0-alpha/dist/Chart.js"></script>
+    <script src="../build/Chart.PCP.js"></script>
+  </head>
+
+  <body>
+    <div style="width: 75%;">
+      <canvas id="canvas" style="border: 1px solid black;"></canvas>
+    </div>
+    <script>
+      fetch('https://raw.githubusercontent.com/derhuerst/mtcars/master/index.json')
+        .then((r) => r.json())
+        .then((mtcars) => {
+          const attrs = ['mpg', 'hp', 'wt', 'qsec', 'gear', 'drat', 'disp', 'cyl'];
+
+          const chart = new Chart(document.getElementById('canvas').getContext('2d'), {
+            type: 'pcp',
+            data: {
+              labels: mtcars.map((c) => c.model),
+              datasets: attrs.map((attr, i) => ({
+                type: i === 1 ? 'logarithmicPcp' : undefined,
+                label: attr,
+                data: mtcars.map((c) => c[attr]),
+              })),
+            },
+            options: {},
+          });
+        });
+    </script>
+  </body>
+</html>

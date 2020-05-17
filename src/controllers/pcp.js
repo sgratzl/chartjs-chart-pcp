@@ -1,5 +1,5 @@
 import { helpers, defaults, DatasetController, controllers } from 'chart.js';
-import { LinearAxis, LineSegment } from '../elements';
+import { LinearAxis, LineSegment, LogarithmicAxis } from '../elements';
 import { PCPScale } from '../scales';
 
 export class ParallelCoordinates extends DatasetController {
@@ -218,4 +218,14 @@ ParallelCoordinates.register = () => {
       },
     },
   });
+};
+
+export class LogarithmicParallelCoordinates extends ParallelCoordinates {}
+
+LogarithmicParallelCoordinates.id = 'logarithmicPcp';
+LogarithmicParallelCoordinates.register = () => {
+  LogarithmicParallelCoordinates.prototype.datasetElementType = LogarithmicAxis.register();
+
+  controllers[LogarithmicParallelCoordinates.id] = LogarithmicParallelCoordinates;
+  defaults.set(LogarithmicParallelCoordinates.id, defaults[ParallelCoordinates.id]);
 };

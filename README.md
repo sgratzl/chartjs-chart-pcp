@@ -40,6 +40,7 @@ const objs = [
 ];
 const attrs = ['f1', 'f2', 'f3'];
 const config = {
+  type: 'pcp',
   data: {
     labels: objs.map((obj) => obj.label),
     datasets: attrs.map((attr) => ({
@@ -78,6 +79,32 @@ interface ILinearAxisOptions {
    */
   axisWidth: number;
 }
+```
+
+## Scaling
+
+The Parallel Coordinates controller `pcp` uses a linear scale. There is also the `logarithmicPcp` that uses a logarithmic scale.
+Using chart.js hybrid charts, one can specify the type per dataset. e.g.,
+
+```js
+const config = {
+  type: 'pcp',
+  data: {
+    labels: ['1', '2', '3'],
+    datasets: [
+      {
+        label: 'A',
+        data: [1, 2, 3]
+      },
+      {
+        type: 'logarithmicPcp',
+        label: 'B',
+        data: [1, 2, 10000]
+      }
+    })),
+  },
+  options: {},
+};
 ```
 
 ## Development Environment

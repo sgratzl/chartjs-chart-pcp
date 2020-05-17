@@ -1,7 +1,6 @@
 export * from '.';
 
-import { ParallelCoordinates } from './controllers';
-import { LogarithmicAxis } from './elements';
+import { ParallelCoordinates, LogarithmicParallelCoordinates } from './controllers';
 
 ParallelCoordinates.register();
-LogarithmicAxis.register();
+LogarithmicParallelCoordinates.register();
