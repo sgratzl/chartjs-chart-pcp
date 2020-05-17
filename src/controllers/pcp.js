@@ -102,7 +102,10 @@ export class ParallelCoordinates extends DatasetController {
       const yScale = m.vScale;
       const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(m._parsed[index][yScale.axis]);
 
-      return { x, y };
+      return {
+        x,
+        y: Number.isNaN(y) ? defaultValue.y : y,
+      };
     };
 
     for (let i = 0; i < rectangles.length; i++) {
