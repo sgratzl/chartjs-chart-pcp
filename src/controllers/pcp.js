@@ -140,71 +140,27 @@ export class ParallelCoordinates extends DatasetController {
     this.updateSharedOptions(sharedOptions, mode);
   }
 
-  _findOtherSegments(element) {
-    const index = element._index;
-    const r = [];
-    const metas = this.chart._getSortedVisibleDatasetMetas();
-    metas.forEach((meta) => {
-      if (meta.controller._type !== this._type || meta.controller === this) {
-        return;
-      }
-      const elem = meta.data[index];
-      if (!elem._model) {
-        return;
-      }
-      r.push(elem);
-    });
-    return r;
+  _findOtherControllers() {
+    const metas = this.chart.getSortedVisibleDatasetMetas();
+    return metas.filter((meta) => meta.controller._type === this._type && meta.controller !== this);
   }
 
-  removeHoverStyleXX(element) {
-    superClass.removeHoverStyle.call(this, element);
-
-    this._findOtherSegments(element).forEach((elem) => {
-      superClass.removeHoverStyle.call(this, elem);
+  removeHoverStyle(element, datasetIndex, index, rec) {
+    super.removeHoverStyle(element, datasetIndex, index);
+    if (rec) {
+      return;
+    }
+    this._findOtherControllers().forEach((meta) => {
+      meta.controller.removeHoverStyle(meta.data[index], meta.index, index, true);
     });
   }
-
-  _setHoverStyleImpl(element) {
-    const dataset = this.chart.data.datasets[element._datasetIndex];
-    const index = element._index;
-    const custom = element.custom || {};
-    const model = element._model;
-    const getHoverColor = Chart.helpers.getHoverColor;
-
-    element.$previousStyle = {
-      backgroundColor: model.backgroundColor,
-      borderColor: model.borderColor,
-      borderWidth: model.borderWidth,
-    };
-
-    model.backgroundColor = Chart.helpers.options.resolve(
-      [
-        custom.hoverBackgroundColor,
-        dataset.hoverBackgroundColor,
-        model.hoverBackgroundColor,
-        getHoverColor(model.backgroundColor),
-      ],
-      undefined,
-      index
-    );
-    model.borderColor = Chart.helpers.options.resolve(
-      [custom.hoverBorderColor, dataset.hoverBorderColor, model.hoverBorderColor, getHoverColor(model.borderColor)],
-      undefined,
-      index
-    );
-    model.borderWidth = Chart.helpers.options.resolve(
-      [custom.hoverBorderWidth, dataset.hoverBorderWidth, model.hoverBorderWidth, model.borderWidth],
-      undefined,
-      index
-    );
-  }
-
-  setHoverStyleXX(element) {
-    this._setHoverStyleImpl(element);
-
-    this._findOtherSegments(element).forEach((elem) => {
-      this._setHoverStyleImpl(elem);
+  setHoverStyle(element, datasetIndex, index, rec) {
+    super.setHoverStyle(element, datasetIndex, index);
+    if (rec) {
+      return;
+    }
+    this._findOtherControllers().forEach((meta) => {
+      meta.controller.setHoverStyle(meta.data[index], meta.index, index, true);
     });
   }
 }
@@ -216,14 +172,14 @@ ParallelCoordinates.register = () => {
   ParallelCoordinates.prototype.dataElementType = LineSegment.register();
   ParallelCoordinates.prototype.dataElementOptions = controllers.line.prototype.datasetElementOptions.concat([
     'tension',
+    'hoverBackgroundColor',
+    'hoverBorderColor',
+    'hoverBorderWidth',
   ]);
 
   controllers[ParallelCoordinates.id] = ParallelCoordinates;
 
   defaults.set(ParallelCoordinates.id, {
-    hover: {
-      mode: 'single',
-    },
     datasets: {
       animation: {
         numbers: {
