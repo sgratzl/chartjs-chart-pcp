@@ -120,8 +120,8 @@ export class ParallelCoordinates extends DatasetController {
       };
 
       if (options.tension) {
-        const xy_prevprev = getPoint(meta._metaIndex - 2, xy_prev);
-        const xy_next = getPoint(meta._metaIndex + 1, xy);
+        const xy_prevprev = getPoint(meta._metaIndex - 2, index, xy_prev);
+        const xy_next = getPoint(meta._metaIndex + 1, index, xy);
 
         const controlPoints = helpers.curve.splineCurve(xy_prevprev, xy_prev, xy, options.tension);
         const controlPoints1 = helpers.curve.splineCurve(xy_prev, xy, xy_next, options.tension);
@@ -214,7 +214,9 @@ ParallelCoordinates.register = () => {
   ParallelCoordinates.prototype.datasetElementType = LinearAxis.register();
   ParallelCoordinates.prototype.datasetElementOptions = ['axisWidth'];
   ParallelCoordinates.prototype.dataElementType = LineSegment.register();
-  ParallelCoordinates.prototype.dataElementOptions = controllers.line.prototype.datasetElementOptions;
+  ParallelCoordinates.prototype.dataElementOptions = controllers.line.prototype.datasetElementOptions.concat([
+    'tension',
+  ]);
 
   controllers[ParallelCoordinates.id] = ParallelCoordinates;
 
