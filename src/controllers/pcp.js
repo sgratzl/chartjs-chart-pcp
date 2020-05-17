@@ -145,7 +145,7 @@ export class ParallelCoordinates extends DatasetController {
 
   _findOtherControllers() {
     const metas = this.chart.getSortedVisibleDatasetMetas();
-    return metas.filter((meta) => meta.controller._type === this._type && meta.controller !== this);
+    return metas.filter((meta) => meta.controller !== this);
   }
 
   removeHoverStyle(element, datasetIndex, index, rec) {
