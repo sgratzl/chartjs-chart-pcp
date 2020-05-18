@@ -23,10 +23,6 @@ export class LineSegment extends Element {
     );
   }
 
-  inLabelRange(mouseX, mouseY, useFinalPosition) {
-    return this.inRange(mouseX, mouseY, useFinalPosition);
-  }
-
   tooltipPosition(useFinalPosition) {
     const props = this.getProps(['x', 'x1', 'y', 'y1'], useFinalPosition);
     return {
