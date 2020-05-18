@@ -107,6 +107,26 @@ const config = {
 };
 ```
 
+
+### ESM and Tree Shaking
+
+The ESM build of the library supports tree shaking thus having no side effects. As a consequence the chart.js library won't be automatically manipulated nor new controllers automatically registered. One has to manually import and register them.
+
+```js
+import Chart from 'chart.js';
+import { ParallelCoordinates } from 'chartjs-chart-pcp';
+
+// register controller in chart.js and ensure the defaults are set
+ParallelCoordinates.register();
+
+const chart = new Chart(document.getElementById('canvas').getContext('2d'), {
+  type: ParallelCoordinates.id,
+  data: {
+    ...
+  },
+});
+```
+
 ## Development Environment
 
 ```sh
