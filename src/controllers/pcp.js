@@ -1,8 +1,9 @@
-import { helpers, defaults, DatasetController, controllers } from 'chart.js';
+import { Chart, defaults, DatasetController, controllers, merge, splineCurve, LineController } from '../chart';
 import { LinearAxis, LineSegment, LogarithmicAxis } from '../elements';
 import { PCPScale } from '../scales';
+import { patchControllerConfig } from './utils';
 
-export class ParallelCoordinates extends DatasetController {
+export class ParallelCoordinatesController extends DatasetController {
   linkScales() {
     const ds = this.getDataset();
     ds.yAxisID = ds.label;
@@ -18,7 +19,7 @@ export class ParallelCoordinates extends DatasetController {
     scale.id = meta.yAxisID;
     scale.axis = 'y';
     scale.type = this.dataElementType.id;
-    scale.options = {}; // helpers.merge({}, [this.chart.options.elements[this.datasetElementType]]);
+    scale.options = {};
     scale.chart = this.chart;
     scale.ctx = this.chart.ctx;
   }
@@ -73,7 +74,7 @@ export class ParallelCoordinates extends DatasetController {
       x,
       top: this.chart.chartArea.top,
       bottom: this.chart.chartArea.bottom,
-      options: helpers.merge({}, [
+      options: merge({}, [
         this.chart.options.elements[this.datasetElementType._type],
         this.resolveDatasetElementOptions(),
         {
@@ -126,8 +127,8 @@ export class ParallelCoordinates extends DatasetController {
         const xy_prevprev = getPoint(meta._metaIndex - 2, index, xy_prev);
         const xy_next = getPoint(meta._metaIndex + 1, index, xy);
 
-        const controlPoints = helpers.curve.splineCurve(xy_prevprev, xy_prev, xy, options.tension);
-        const controlPoints1 = helpers.curve.splineCurve(xy_prev, xy, xy_next, options.tension);
+        const controlPoints = splineCurve(xy_prevprev, xy_prev, xy, options.tension);
+        const controlPoints1 = splineCurve(xy_prev, xy, xy_next, options.tension);
 
         properties.xCPn = controlPoints.next.x;
         properties.yCPn = controlPoints.next.y;
@@ -168,21 +169,21 @@ export class ParallelCoordinates extends DatasetController {
   }
 }
 
-ParallelCoordinates.id = 'pcp';
-ParallelCoordinates.register = () => {
-  ParallelCoordinates.prototype.datasetElementType = LinearAxis.register();
-  ParallelCoordinates.prototype.datasetElementOptions = ['axisWidth'];
-  ParallelCoordinates.prototype.dataElementType = LineSegment.register();
-  ParallelCoordinates.prototype.dataElementOptions = controllers.line.prototype.datasetElementOptions.concat([
+ParallelCoordinatesController.id = 'pcp';
+ParallelCoordinatesController.register = () => {
+  ParallelCoordinatesController.prototype.datasetElementType = LinearAxis.register();
+  ParallelCoordinatesController.prototype.datasetElementOptions = ['axisWidth'];
+  ParallelCoordinatesController.prototype.dataElementType = LineSegment.register();
+  ParallelCoordinatesController.prototype.dataElementOptions = LineController.prototype.datasetElementOptions.concat([
     'tension',
     'hoverBackgroundColor',
     'hoverBorderColor',
     'hoverBorderWidth',
   ]);
 
-  controllers[ParallelCoordinates.id] = ParallelCoordinates;
+  controllers[ParallelCoordinatesController.id] = ParallelCoordinatesController;
 
-  defaults.set(ParallelCoordinates.id, {
+  defaults.set(ParallelCoordinatesController.id, {
     datasets: {
       animation: {
         numbers: {
@@ -220,12 +221,26 @@ ParallelCoordinates.register = () => {
   });
 };
 
-export class LogarithmicParallelCoordinates extends ParallelCoordinates {}
+export class ParallelCoordinatesChart extends Chart {
+  constructor(item, config) {
+    super(item, patchControllerConfig(config, ParallelCoordinatesController));
+  }
+}
+ParallelCoordinatesChart.id = ParallelCoordinatesController.id;
 
-LogarithmicParallelCoordinates.id = 'logarithmicPcp';
-LogarithmicParallelCoordinates.register = () => {
-  LogarithmicParallelCoordinates.prototype.datasetElementType = LogarithmicAxis.register();
+export class LogarithmicParallelCoordinatesController extends ParallelCoordinatesController {}
 
-  controllers[LogarithmicParallelCoordinates.id] = LogarithmicParallelCoordinates;
-  defaults.set(LogarithmicParallelCoordinates.id, defaults[ParallelCoordinates.id]);
+LogarithmicParallelCoordinatesController.id = 'logarithmicPcp';
+LogarithmicParallelCoordinatesController.register = () => {
+  LogarithmicParallelCoordinatesController.prototype.datasetElementType = LogarithmicAxis.register();
+
+  controllers[LogarithmicParallelCoordinatesController.id] = LogarithmicParallelCoordinatesController;
+  defaults.set(LogarithmicParallelCoordinatesController.id, defaults[ParallelCoordinatesController.id]);
 };
+
+export class LogarithmicParallelChart extends Chart {
+  constructor(item, config) {
+    super(item, patchControllerConfig(config, LogarithmicParallelCoordinatesController));
+  }
+}
+LogarithmicParallelChart.id = LogarithmicParallelCoordinatesController.id;

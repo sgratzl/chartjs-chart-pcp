@@ -1,4 +1,4 @@
-import { scaleService, defaults } from 'chart.js';
+import { defaults, LinearScale, LogarithmicScale, merge } from '../chart';
 
 function BaseMixin(superClass) {
   return class extends superClass {
@@ -42,20 +42,24 @@ const scaleDefaults = {
   position: 'right',
 };
 
-export class LinearAxis extends BaseMixin(scaleService.getScaleConstructor('linear')) {}
-LinearAxis._type = 'linearAxis';
+export class LinearAxis extends BaseMixin(LinearScale) {}
+
+LinearAxis.id = LinearAxis._type = 'linearAxis';
+LinearAxis.defaults = merge({}, [defaults.scale, LinearScale.defaults, scaleDefaults]);
 LinearAxis.register = () => {
   defaults.set('elements', {
-    [LinearAxis._type]: Object.assign({}, Chart.scaleService.getScaleDefaults('linear'), scaleDefaults),
+    [LinearAxis.id]: LinearAxis.defaults,
   });
   return LinearAxis;
 };
 
-export class LogarithmicAxis extends BaseMixin(scaleService.getScaleConstructor('logarithmic')) {}
-LogarithmicAxis._type = 'logarithmicAxis';
+export class LogarithmicAxis extends BaseMixin(LogarithmicScale) {}
+
+LogarithmicAxis.id = LogarithmicAxis._type = 'logarithmicAxis';
+LogarithmicAxis.defaults = merge({}, [defaults.scale, LogarithmicScale.defaults, scaleDefaults]);
 LogarithmicAxis.register = () => {
   defaults.set('elements', {
-    [LogarithmicAxis._type]: Object.assign({}, Chart.scaleService.getScaleDefaults('logarithmic'), scaleDefaults),
+    [LogarithmicAxis.id]: LogarithmicAxis.defaults,
   });
   return LogarithmicAxis;
 };

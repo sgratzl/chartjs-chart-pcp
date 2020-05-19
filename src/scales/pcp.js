@@ -1,6 +1,6 @@
-import { scaleService, helpers } from 'chart.js';
+import { merge, CategoryScale, scaleService } from '../chart';
 
-export class PCPScale extends scaleService.getScaleConstructor('category') {
+export class PCPScale extends CategoryScale {
   getLabels() {
     const datasets = this.chart.data.datasets;
     return this.getMatchingVisibleMetas().map((meta) => {
@@ -11,7 +11,7 @@ export class PCPScale extends scaleService.getScaleConstructor('category') {
 }
 
 PCPScale.id = 'pcp';
-PCPScale.defaults = helpers.merge({}, [scaleService.getScaleDefaults('category'), {}]);
+PCPScale.defaults = merge({}, [CategoryScale.defaults, {}]);
 PCPScale.register = () => {
   scaleService.registerScale(PCPScale);
   return PCPScale;

@@ -1,4 +1,4 @@
-import { defaults, Element } from 'chart.js';
+import { defaults, Element } from '../chart';
 
 export class LineSegment extends Element {
   _getLineParts(props) {
@@ -84,15 +84,16 @@ export class LineSegment extends Element {
   }
 }
 
-LineSegment._type = 'lineSegment';
+LineSegment.id = LineSegment._type = 'lineSegment';
+LineSegment.defaults = Object.assign({}, defaults.elements.line, {
+  hoverBorderWidth: 4,
+  hoverBorderColor: 'rgba(0,0,0,0.8)',
+  borderCapStyle: 'round',
+  tension: 0,
+});
 LineSegment.register = () => {
   defaults.set('elements', {
-    [LineSegment._type]: Object.assign({}, defaults.elements.line, {
-      hoverBorderWidth: 4,
-      hoverBorderColor: 'rgba(0,0,0,0.8)',
-      borderCapStyle: 'round',
-      tension: 0,
-    }),
+    [LineSegment.id]: LineSegment.defaults,
   });
   return LineSegment;
 };
