@@ -1,4 +1,4 @@
-import { merge, CategoryScale, scaleService } from '../chart';
+import { CategoryScale, registerScale } from '../chart';
 
 export class PCPScale extends CategoryScale {
   getLabels() {
@@ -11,8 +11,5 @@ export class PCPScale extends CategoryScale {
 }
 
 PCPScale.id = 'pcp';
-PCPScale.defaults = merge({}, [CategoryScale.defaults, {}]);
-PCPScale.register = () => {
-  scaleService.registerScale(PCPScale);
-  return PCPScale;
-};
+PCPScale.defaults = CategoryScale.defaults;
+PCPScale.register = () => registerScale(PCPScale);

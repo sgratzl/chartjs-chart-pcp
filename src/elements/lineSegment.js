@@ -1,4 +1,4 @@
-import { defaults, Element } from '../chart';
+import { defaults, Element, registerElement } from '../chart';
 
 export class LineSegment extends Element {
   _getLineParts(props) {
@@ -91,9 +91,4 @@ LineSegment.defaults = Object.assign({}, defaults.elements.line, {
   borderCapStyle: 'round',
   tension: 0,
 });
-LineSegment.register = () => {
-  defaults.set('elements', {
-    [LineSegment.id]: LineSegment.defaults,
-  });
-  return LineSegment;
-};
+LineSegment.register = () => registerElement(LineSegment);

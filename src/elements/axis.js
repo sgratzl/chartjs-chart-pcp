@@ -1,4 +1,4 @@
-import { defaults, LinearScale, LogarithmicScale, merge } from '../chart';
+import { defaults, LinearScale, LogarithmicScale, merge, registerElement } from '../chart';
 
 function BaseMixin(superClass) {
   return class extends superClass {
@@ -46,20 +46,10 @@ export class LinearAxis extends BaseMixin(LinearScale) {}
 
 LinearAxis.id = LinearAxis._type = 'linearAxis';
 LinearAxis.defaults = merge({}, [defaults.scale, LinearScale.defaults, scaleDefaults]);
-LinearAxis.register = () => {
-  defaults.set('elements', {
-    [LinearAxis.id]: LinearAxis.defaults,
-  });
-  return LinearAxis;
-};
+LinearAxis.register = () => registerElement(LinearAxis);
 
 export class LogarithmicAxis extends BaseMixin(LogarithmicScale) {}
 
 LogarithmicAxis.id = LogarithmicAxis._type = 'logarithmicAxis';
 LogarithmicAxis.defaults = merge({}, [defaults.scale, LogarithmicScale.defaults, scaleDefaults]);
-LogarithmicAxis.register = () => {
-  defaults.set('elements', {
-    [LogarithmicAxis.id]: LogarithmicAxis.defaults,
-  });
-  return LogarithmicAxis;
-};
+LogarithmicAxis.register = () => registerElement(LogarithmicAxis);

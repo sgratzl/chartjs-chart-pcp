@@ -1,7 +1,6 @@
-import { Chart, defaults, DatasetController, controllers, merge, splineCurve, LineController } from '../chart';
+import { Chart, DatasetController, merge, splineCurve, LineController, registerController, patchControllerConfig } from '../chart';
 import { LinearAxis, LineSegment, LogarithmicAxis } from '../elements';
 import { PCPScale } from '../scales';
-import { patchControllerConfig } from './utils';
 
 export class ParallelCoordinatesController extends DatasetController {
   linkScales() {
@@ -180,10 +179,7 @@ ParallelCoordinatesController.register = () => {
     'hoverBorderColor',
     'hoverBorderWidth',
   ]);
-
-  controllers[ParallelCoordinatesController.id] = ParallelCoordinatesController;
-
-  defaults.set(ParallelCoordinatesController.id, {
+  ParallelCoordinatesController.defaults = {
     datasets: {
       animation: {
         numbers: {
@@ -218,7 +214,9 @@ ParallelCoordinatesController.register = () => {
         },
       },
     },
-  });
+  };
+
+  return registerController(ParallelCoordinatesController);
 };
 
 export class ParallelCoordinatesChart extends Chart {
@@ -232,10 +230,11 @@ export class LogarithmicParallelCoordinatesController extends ParallelCoordinate
 
 LogarithmicParallelCoordinatesController.id = 'logarithmicPcp';
 LogarithmicParallelCoordinatesController.register = () => {
+  ParallelCoordinatesController.register();
   LogarithmicParallelCoordinatesController.prototype.datasetElementType = LogarithmicAxis.register();
 
-  controllers[LogarithmicParallelCoordinatesController.id] = LogarithmicParallelCoordinatesController;
-  defaults.set(LogarithmicParallelCoordinatesController.id, defaults[ParallelCoordinatesController.id]);
+  LogarithmicParallelCoordinatesController.defaults = ParallelCoordinatesController.defaults;
+  return registerController(LogarithmicParallelCoordinatesController);
 };
 
 export class LogarithmicParallelChart extends Chart {
