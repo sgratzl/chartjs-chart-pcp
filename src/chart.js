@@ -3,15 +3,15 @@ import ChartNS from 'chart.js';
 export const Chart = ChartNS;
 
 export function registerPlugin(plugin) {
-    ChartNS.plugins.register(plugin);
-    return plugin;
+  ChartNS.plugins.register(plugin);
+  return plugin;
 }
 
 export const defaults = ChartNS.defaults;
 
 export function registerScale(scale) {
-    ChartNS.scaleService.registerScale(scale);
-    return scale;
+  ChartNS.scaleService.registerScale(scale);
+  return scale;
 }
 
 // export const Scale = ChartNS.Scale;
@@ -28,9 +28,9 @@ export const LineController = ChartNS.controllers.line;
 // export const ScatterController = ChartNS.controllers.scatter;
 
 export function registerController(controller) {
-    ChartNS.controllers[controller.id] = controller;
-    ChartNS.defaults.set(controller.id, controller.defaults);
-    return controller;
+  ChartNS.controllers[controller.id] = controller;
+  ChartNS.defaults.set(controller.id, controller.defaults);
+  return controller;
 }
 
 export const Element = ChartNS.Element;
@@ -40,12 +40,11 @@ export const Element = ChartNS.Element;
 // export const Arc = ChartNS.elements.Arc;
 
 export function registerElement(element) {
-    ChartNS.defaults.set('elements', {
-        [element.id]: element.defaults,
-    });
-    return element;
+  ChartNS.defaults.set('elements', {
+    [element.id]: element.defaults,
+  });
+  return element;
 }
-
 
 export const merge = ChartNS.helpers.merge;
 // export const drawPoint = ChartNS.helpers.canvas.drawPoint;
@@ -58,7 +57,7 @@ export const merge = ChartNS.helpers.merge;
 export const splineCurve = ChartNS.helpers.curve.splineCurve;
 
 export function patchControllerConfig(config, controller) {
-    controller.register();
-    config.type = controller.id;
-    return config;
+  controller.register();
+  config.type = controller.id;
+  return config;
 }

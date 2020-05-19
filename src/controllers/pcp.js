@@ -1,4 +1,12 @@
-import { Chart, DatasetController, merge, splineCurve, LineController, registerController, patchControllerConfig } from '../chart';
+import {
+  Chart,
+  DatasetController,
+  merge,
+  splineCurve,
+  LineController,
+  registerController,
+  patchControllerConfig,
+} from '../chart';
 import { LinearAxis, LineSegment, LogarithmicAxis } from '../elements';
 import { PCPScale } from '../scales';
 
