@@ -42,5 +42,5 @@ export default async function matchChart(config, width = 300, height = 300, matc
   const t = new Chart(ctx, config);
 
   const image = await toBuffer(canvas);
-  expect(image).toMatchImageSnapshot();
+  expect(image).toMatchImageSnapshot(matchOptions);
 }
