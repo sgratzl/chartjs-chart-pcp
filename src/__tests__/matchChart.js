@@ -22,7 +22,7 @@ export async function expectMatchSnapshot(canvas) {
   expect(image).toMatchImageSnapshot();
 }
 
-export default async function matchChart(config, width = 300, height = 300) {
+export default async function matchChart(config, width = 300, height = 300, matchOptions = {}) {
   const canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
