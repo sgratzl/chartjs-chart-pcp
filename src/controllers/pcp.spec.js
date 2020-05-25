@@ -20,6 +20,11 @@ describe('pcp', () => {
           })),
         },
         options: {
+          scales: {
+            x: {
+              display: false,
+            },
+          },
           elements: {
             linearAxis: {
               display: false,
@@ -34,10 +39,7 @@ describe('pcp', () => {
         },
       },
       1000,
-      500,
-      {
-        blur: 1,
-      }
+      500
     );
   });
   test('log', () => {
@@ -54,6 +56,11 @@ describe('pcp', () => {
           })),
         },
         options: {
+          scales: {
+            x: {
+              display: false,
+            },
+          },
           elements: {
             linearAxis: {
               display: false,
@@ -68,10 +75,7 @@ describe('pcp', () => {
         },
       },
       1000,
-      500,
-      {
-        blur: 1,
-      }
+      500
     );
   });
   test('tension', () => {
@@ -87,6 +91,11 @@ describe('pcp', () => {
           })),
         },
         options: {
+          scales: {
+            x: {
+              display: false,
+            },
+          },
           elements: {
             linearAxis: {
               tension: 0.3,
@@ -102,10 +111,7 @@ describe('pcp', () => {
         },
       },
       1000,
-      500,
-      {
-        blur: 1,
-      }
+      500
     );
   });
 });
