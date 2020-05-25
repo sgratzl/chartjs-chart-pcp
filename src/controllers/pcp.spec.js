@@ -19,6 +19,19 @@ describe('pcp', () => {
             data: mtcars.map((c) => c[attr]),
           })),
         },
+        options: {
+          elements: {
+            linearAxis: {
+              display: false,
+            },
+            logarithmicAxis: {
+              display: false,
+            },
+          },
+          legend: {
+            display: false,
+          },
+        },
       },
       1000,
       500
@@ -36,6 +49,19 @@ describe('pcp', () => {
             label: attr,
             data: mtcars.map((c) => c[attr]),
           })),
+        },
+        options: {
+          elements: {
+            linearAxis: {
+              display: false,
+            },
+            logarithmicAxis: {
+              display: false,
+            },
+          },
+          legend: {
+            display: false,
+          },
         },
       },
       1000,
@@ -56,9 +82,16 @@ describe('pcp', () => {
         },
         options: {
           elements: {
-            lineSegment: {
+            linearAxis: {
               tension: 0.3,
+              display: false,
             },
+            logarithmicAxis: {
+              display: false,
+            },
+          },
+          legend: {
+            display: false,
           },
         },
       },
