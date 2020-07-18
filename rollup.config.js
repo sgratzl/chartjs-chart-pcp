@@ -6,7 +6,7 @@ import babel from '@rollup/plugin-babel';
 import alias from '@rollup/plugin-alias';
 import pkg from './package.json';
 
-function alsoSub(external) {
+function startsWith(external) {
   return (e) => {
     return external.includes(e) || external.some((d) => e.startsWith(d + '/'));
   };
@@ -14,7 +14,7 @@ function alsoSub(external) {
 
 export default [
   {
-    input: 'src/bundle.js',
+    input: 'src/index.umd.js',
     output: {
       file: pkg.main,
       name: 'ChartPCP',
@@ -23,7 +23,7 @@ export default [
         'chart.js': 'Chart',
       },
     },
-    external: alsoSub(Object.keys(pkg.peerDependencies)),
+    external: Object.keys(pkg.peerDependencies),
     plugins: [
       alias({
         entries: [
@@ -45,7 +45,7 @@ export default [
       file: pkg.module,
       format: 'esm',
     },
-    external: alsoSub(Object.keys(pkg.peerDependencies).concat(Object.keys(pkg.dependencies))),
+    external: startsWith(Object.keys(pkg.peerDependencies).concat(Object.keys(pkg.dependencies))),
     plugins: [commonjs(), pnp(), resolve()],
   },
 ];
