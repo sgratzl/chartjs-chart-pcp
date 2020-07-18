@@ -1597,25 +1597,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sgratzl/chartjs-esm-facade@portal:/D:/w/chartjs/chartjs-esm-facade::locator=chartjs-chart-pcp%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@sgratzl/chartjs-esm-facade@portal:/D:/w/chartjs/chartjs-esm-facade::locator=chartjs-chart-pcp%40workspace%3A."
-  dependencies:
-    "@yarnpkg/pnpify": ^2.0.0-rc.22
-    chart.js: ^3.0.0-alpha.2
-    eslint: ^7.0.0
-    eslint-config-prettier: ^6.11.0
-    eslint-plugin-prettier: ^3.1.3
-    prettier: ^2.0.5
-    release-it: ^13.6.0
-    rimraf: ^3.0.2
+"@sgratzl/chartjs-esm-facade@npm:^3.0.0-alpha.1":
+  version: 3.0.0-alpha.1
+  resolution: "@sgratzl/chartjs-esm-facade@npm:3.0.0-alpha.1"
   peerDependencies:
     chart.js: ^3.0.0-alpha.2
   dependenciesMeta:
     chart.js:
       unplugged: true
+  checksum: 7ad43bf60bac1f14cd8f48f59845fdd1037e256901256db89ea9a0eb2999e9abbcb948133a78abbbdcf3f1e2214a6f314fcb6b342cf1b39483954b018a1c354e
   languageName: node
-  linkType: soft
+  linkType: hard
 
 "@sindresorhus/is@npm:^0.14.0":
   version: 0.14.0
@@ -1978,7 +1970,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@yarnpkg/pnpify@npm:^2.0.0-rc.22, @yarnpkg/pnpify@npm:^2.1.0":
+"@yarnpkg/pnpify@npm:^2.1.0":
   version: 2.1.0
   resolution: "@yarnpkg/pnpify@npm:2.1.0"
   dependencies:
@@ -2732,7 +2724,7 @@ __metadata:
     "@rollup/plugin-babel": ^5.1.0
     "@rollup/plugin-commonjs": ^14.0.0
     "@rollup/plugin-node-resolve": ^8.4.0
-    "@sgratzl/chartjs-esm-facade": ^3.0.0-alpha.2
+    "@sgratzl/chartjs-esm-facade": ^3.0.0-alpha.1
     "@yarnpkg/pnpify": ^2.1.0
     babel-jest: ^26.1.0
     canvas: ^2.6.1
@@ -2749,6 +2741,7 @@ __metadata:
     rollup-plugin-pnp-resolve: ^2.0.0
     uglify-es: ^3.3.9
   peerDependencies:
+    "@sgratzl/chartjs-esm-facade": ^3.0.0-alpha.1
     chart.js: ^3.0.0-alpha.2
   languageName: unknown
   linkType: soft
@@ -3521,7 +3514,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-prettier@npm:^3.1.3, eslint-plugin-prettier@npm:^3.1.4":
+"eslint-plugin-prettier@npm:^3.1.4":
   version: 3.1.4
   resolution: "eslint-plugin-prettier@npm:3.1.4"
   dependencies:
@@ -3559,7 +3552,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^7.0.0, eslint@npm:^7.4.0":
+"eslint@npm:^7.4.0":
   version: 7.4.0
   resolution: "eslint@npm:7.4.0"
   dependencies:
@@ -7090,7 +7083,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"release-it@npm:^13.6.0, release-it@npm:^13.6.5":
+"release-it@npm:^13.6.5":
   version: 13.6.5
   resolution: "release-it@npm:13.6.5"
   dependencies:
