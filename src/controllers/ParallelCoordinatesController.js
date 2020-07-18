@@ -8,6 +8,7 @@ export class ParallelCoordinatesController extends DatasetController {
     const ds = this.getDataset();
     ds.yAxisID = ds.label;
     super.linkScales();
+    this._cachedMeta.vScale = this._cachedMeta.dataset;
   }
 
   addElements() {
@@ -22,10 +23,6 @@ export class ParallelCoordinatesController extends DatasetController {
     scale.options = {};
     scale.chart = this.chart;
     scale.ctx = this.chart.ctx;
-  }
-
-  _getValueScale() {
-    return this._cachedMeta.dataset;
   }
 
   update(mode) {
