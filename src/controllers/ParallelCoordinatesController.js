@@ -1,4 +1,4 @@
-import { Chart, DatasetController, LineController, merge, splineCurve, registry } from '@sgratzl/chartjs-esm-facade';
+import { Chart, DatasetController, LineController, merge, splineCurve } from '@sgratzl/chartjs-esm-facade';
 import { LinearAxis, LineSegment } from '../elements';
 import { PCPScale } from '../scales';
 import patchController from './patchController';
@@ -217,14 +217,7 @@ ParallelCoordinatesController.defaults = {
 
 export class ParallelCoordinatesChart extends Chart {
   constructor(item, config) {
-    super(
-      item,
-      patchController(config, ParallelCoordinatesController, () => {
-        registry.scales.register(PCPScale);
-        registry.elements.register(LinearAxis);
-        registry.elements.register(LineSegment);
-      })
-    );
+    super(item, patchController(config, ParallelCoordinatesController, [LinearAxis, LineSegment], PCPScale));
   }
 }
 ParallelCoordinatesChart.id = ParallelCoordinatesController.id;

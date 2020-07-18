@@ -1,10 +1,9 @@
-import { Chart } from '@sgratzl/chartjs-esm-facade';
+import { Chart, registry } from '@sgratzl/chartjs-esm-facade';
 
-export default function patchController(config, controller, cb) {
-  Chart.register(controller);
-  if (cb) {
-    cb();
-  }
+export default function patchController(config, controller, elements = [], scales = []) {
+  registry.addControllers(controller);
+  registry.addElements(elements);
+  registry.addScales(scales);
   config.type = controller.id;
   return config;
 }
