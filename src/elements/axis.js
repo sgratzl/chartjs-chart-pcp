@@ -1,4 +1,4 @@
-import { LinearScale, LogarithmicScale, defaults } from '@sgratzl/chartjs-esm-facade';
+import { LinearScale, LogarithmicScale, defaults, merge } from '@sgratzl/chartjs-esm-facade';
 
 function BaseMixin(superClass) {
   return class extends superClass {
@@ -45,9 +45,9 @@ const scaleDefaults = {
 export class LinearAxis extends BaseMixin(LinearScale) {}
 
 LinearAxis.id = 'linearAxis';
-LinearAxis.defaults = /*#__PURE__*/ Object.assign({}, defaults.scale, LinearScale.defaults, scaleDefaults);
+LinearAxis.defaults = /*#__PURE__*/ merge({}, [defaults.scale, LinearScale.defaults, scaleDefaults]);
 
 export class LogarithmicAxis extends BaseMixin(LogarithmicScale) {}
 
 LogarithmicAxis.id = 'logarithmicAxis';
-LogarithmicAxis.defaults = /*#__PURE__*/ Object.assign({}, defaults.scale, LogarithmicScale.defaults, scaleDefaults);
+LogarithmicAxis.defaults = /*#__PURE__*/ merge({}, [defaults.scale, LogarithmicScale.defaults, scaleDefaults]);

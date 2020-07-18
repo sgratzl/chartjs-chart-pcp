@@ -91,3 +91,4 @@ LineSegment.defaults = /*#__PURE__*/ Object.assign({}, Line.defaults, {
   borderCapStyle: 'round',
   tension: 0,
 });
+LineSegment.defaultRoutes = Line.defaultRoutes;

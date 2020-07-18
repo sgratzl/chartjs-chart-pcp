@@ -27,7 +27,7 @@
       fetch('https://raw.githubusercontent.com/derhuerst/mtcars/master/index.json')
         .then((r) => r.json())
         .then((mtcars) => {
-          const attrs = ['mpg', 'hp', 'wt', 'qsec', 'gear', 'drat', 'disp', 'cyl'];
+          const attrs = ['mpg', 'hp', 'wt', 'qsec', 'gear', 'drat', 'disp', 'cyl', 'am'];
 
           const chart = new ParallelCoordinatesChart(document.getElementById('canvas').getContext('2d'), {
             data: {
