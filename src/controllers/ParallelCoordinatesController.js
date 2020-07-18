@@ -204,7 +204,7 @@ ParallelCoordinatesController.defaults = {
         return '';
       },
       label(tooltipItem) {
-        const label = tooltipItem.label;
+        const label = tooltipItem.chart.data.labels[tooltipItem.dataIndex];
         const ds = tooltipItem.chart
           .getSortedVisibleDatasetMetas()
           .map((d) => `${d.label}=${d.controller.getDataset().data[tooltipItem.dataIndex]}`);
