@@ -44,10 +44,10 @@ const scaleDefaults = {
 
 export class LinearAxis extends BaseMixin(LinearScale) {}
 
-LinearAxis.id = LinearAxis._type = 'linearAxis';
+LinearAxis.id = 'linearAxis';
 LinearAxis.defaults = /*#__PURE__*/ Object.assign({}, defaults.scale, LinearScale.defaults, scaleDefaults);
 
 export class LogarithmicAxis extends BaseMixin(LogarithmicScale) {}
 
-LogarithmicAxis.id = LogarithmicAxis._type = 'logarithmicAxis';
+LogarithmicAxis.id = 'logarithmicAxis';
 LogarithmicAxis.defaults = /*#__PURE__*/ Object.assign({}, defaults.scale, LogarithmicScale.defaults, scaleDefaults);

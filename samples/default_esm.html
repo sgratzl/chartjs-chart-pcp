@@ -4,20 +4,25 @@
     <title>PCP Chart</title>
   </head>
   <body>
-    <div id="container" style="width: 75%;">
-      <canvas id="canvas"></canvas>
+    <div style="width: 75%;">
+      <canvas id="canvas" style="border: 1px solid black;"></canvas>
     </div>
     <script defer src="https://unpkg.com/es-module-shims"></script>
     <script type="importmap-shim">
       {
         "imports": {
           "chart.js": "https://unpkg.com/chart.js@3.0.0-alpha.2/dist/chart.esm.js",
+          "chart.js/helpers/core": "https://unpkg.com/chart.js@3.0.0-alpha.2/helpers/core.js",
+          "chart.js/helpers/curve": "https://unpkg.com/chart.js@3.0.0-alpha.2/helpers/curve.js",
           "chartjs-chart-pcp": "../build/Chart.PCP.esm.js"
         }
       }
     </script>
     <script type="module-shim">
+      import {Chart, Tooltip, Legend, Line} from 'chart.js';
       import { ParallelCoordinatesChart } from 'chartjs-chart-pcp';
+
+      Chart.register(Tooltip, Legend, Line)
 
       fetch('https://raw.githubusercontent.com/derhuerst/mtcars/master/index.json')
         .then((r) => r.json())

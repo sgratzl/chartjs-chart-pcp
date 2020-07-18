@@ -1,4 +1,4 @@
-import { Chart, DatasetController, LineController, merge, splineCurve } from '@sgratzl/chartjs-esm-facade';
+import { Chart, DatasetController, LineController, merge, splineCurve, registry } from '@sgratzl/chartjs-esm-facade';
 import { LinearAxis, LineSegment } from '../elements';
 import { PCPScale } from '../scales';
 import patchController from './patchController';
@@ -67,7 +67,7 @@ export class ParallelCoordinatesController extends DatasetController {
 
   updateAxis(axis, mode) {
     const meta = this._cachedMeta;
-    const xScale = this._getIndexScale();
+    const xScale = meta.xScale;
     const x = xScale.getPixelForTick(meta._metaIndex);
 
     // TODO element options
@@ -76,7 +76,7 @@ export class ParallelCoordinatesController extends DatasetController {
       top: this.chart.chartArea.top,
       bottom: this.chart.chartArea.bottom,
       options: merge({}, [
-        this.chart.options.elements[this.datasetElementType._type],
+        this.chart.options.elements[this.datasetElementType.id],
         this.resolveDatasetElementOptions(),
         {
           position: meta._metaIndex > 0 ? 'right' : 'left',
@@ -206,11 +206,11 @@ ParallelCoordinatesController.defaults = {
       title() {
         return '';
       },
-      label(tooltipItem, data) {
-        const label = data.labels[tooltipItem.index];
-        const ds = data.datasets
-          .filter((d) => !d._meta || !d._meta.hidden)
-          .map((d) => `${d.label}=${d.data[tooltipItem.index]}`);
+      label(tooltipItem) {
+        const label = tooltipItem.label;
+        const ds = tooltipItem.chart
+          .getSortedVisibleDatasetMetas()
+          .map((d) => `${d.label}=${d.controller.getDataset().data[tooltipItem.dataIndex]}`);
 
         return `${label}(${ds.join(', ')})`;
       },
@@ -220,7 +220,14 @@ ParallelCoordinatesController.defaults = {
 
 export class ParallelCoordinatesChart extends Chart {
   constructor(item, config) {
-    super(item, patchController(config, ParallelCoordinatesController, [LinearAxis, LineSegment]));
+    super(
+      item,
+      patchController(config, ParallelCoordinatesController, () => {
+        registry.scales.register(PCPScale);
+        registry.elements.register(LinearAxis);
+        registry.elements.register(LineSegment);
+      })
+    );
   }
 }
 ParallelCoordinatesChart.id = ParallelCoordinatesController.id;
