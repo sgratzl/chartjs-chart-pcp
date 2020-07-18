@@ -107,7 +107,6 @@ const config = {
 };
 ```
 
-
 ### ESM and Tree Shaking
 
 The ESM build of the library supports tree shaking thus having no side effects. As a consequence the chart.js library won't be automatically manipulated nor new controllers automatically registered. One has to manually import and register them.
@@ -142,9 +141,9 @@ new ParallelCoordinatesChart(ctx, {
 
 ```sh
 npm i -g yarn
-yarn set version 2
+yarn set version 2.1.0
 yarn
-yarn pnpify --sdk
+yarn pnpify --sdk vscode
 ```
 
 ### Building

@@ -1,4 +1,4 @@
-import { defaults, Element, registerElement } from '../chart';
+import { Element, Line } from '@sgratzl/chartjs-esm-facade';
 
 export class LineSegment extends Element {
   _getLineParts(props) {
@@ -84,11 +84,10 @@ export class LineSegment extends Element {
   }
 }
 
-LineSegment.id = LineSegment._type = 'lineSegment';
-LineSegment.defaults = Object.assign({}, defaults.elements.line, {
+LineSegment.id = 'lineSegment';
+LineSegment.defaults = /*#__PURE__*/ Object.assign({}, Line.defaults, {
   hoverBorderWidth: 4,
   hoverBorderColor: 'rgba(0,0,0,0.8)',
   borderCapStyle: 'round',
   tension: 0,
 });
-LineSegment.register = () => registerElement(LineSegment);

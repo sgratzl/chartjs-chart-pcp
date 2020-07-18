@@ -3,7 +3,14 @@ import pnp from 'rollup-plugin-pnp-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import babel from '@rollup/plugin-babel';
+import alias from '@rollup/plugin-alias';
 import pkg from './package.json';
+
+function alsoSub(external) {
+  return (e) => {
+    return external.includes(e) || external.some((d) => e.startsWith(d + '/'));
+  };
+}
 
 export default [
   {
@@ -16,8 +23,21 @@ export default [
         'chart.js': 'Chart',
       },
     },
-    external: Object.keys(pkg.peerDependencies),
-    plugins: [commonjs(), pnp(), resolve(), babel({ babelHelpers: 'runtime' })],
+    external: alsoSub(Object.keys(pkg.peerDependencies)),
+    plugins: [
+      alias({
+        entries: [
+          {
+            find: /^(@sgratzl\/chartjs-esm-facade)$/,
+            replacement: '@sgratzl/chartjs-esm-facade/src/index.umd.js',
+          },
+        ],
+      }),
+      commonjs(),
+      pnp(),
+      resolve(),
+      babel({ babelHelpers: 'runtime' }),
+    ],
   },
   {
     input: 'src/index.js',
@@ -25,7 +45,7 @@ export default [
       file: pkg.module,
       format: 'esm',
     },
-    external: Object.keys(pkg.peerDependencies).concat(Object.keys(pkg.dependencies)),
+    external: alsoSub(Object.keys(pkg.peerDependencies).concat(Object.keys(pkg.dependencies))),
     plugins: [commonjs(), pnp(), resolve()],
   },
 ];

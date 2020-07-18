@@ -1,14 +1,7 @@
-import {
-  Chart,
-  DatasetController,
-  merge,
-  splineCurve,
-  LineController,
-  registerController,
-  patchControllerConfig,
-} from '../chart';
-import { LinearAxis, LineSegment, LogarithmicAxis } from '../elements';
+import { Chart, DatasetController, LineController, merge, splineCurve } from '@sgratzl/chartjs-esm-facade';
+import { LinearAxis, LineSegment } from '../elements';
 import { PCPScale } from '../scales';
+import patchController from './patchController';
 
 export class ParallelCoordinatesController extends DatasetController {
   linkScales() {
@@ -77,6 +70,7 @@ export class ParallelCoordinatesController extends DatasetController {
     const xScale = this._getIndexScale();
     const x = xScale.getPixelForTick(meta._metaIndex);
 
+    // TODO element options
     const properties = {
       x,
       top: this.chart.chartArea.top,
@@ -177,77 +171,56 @@ export class ParallelCoordinatesController extends DatasetController {
 }
 
 ParallelCoordinatesController.id = 'pcp';
-ParallelCoordinatesController.register = () => {
-  ParallelCoordinatesController.prototype.datasetElementType = LinearAxis.register();
-  ParallelCoordinatesController.prototype.datasetElementOptions = ['axisWidth'];
-  ParallelCoordinatesController.prototype.dataElementType = LineSegment.register();
-  ParallelCoordinatesController.prototype.dataElementOptions = LineController.prototype.datasetElementOptions.concat([
+ParallelCoordinatesController.defaults = {
+  datasetElementType: LinearAxis.id,
+  datasetElementOptions: ['axisWidth'],
+  dataElementType: LineSegment.id,
+  dataElementOptions: LineController.defaults.datasetElementOptions.concat([
     'tension',
     'hoverBackgroundColor',
     'hoverBorderColor',
     'hoverBorderWidth',
-  ]);
-  ParallelCoordinatesController.defaults = {
-    datasets: {
-      animation: {
-        numbers: {
-          type: 'number',
-          properties: ['x', 'y', 'x1', 'y1', 'axisWidth', 'xCPn', 'yCPn', 'xCPp1', 'yCPp1', 'borderWidth'],
-        },
+  ]),
+
+  datasets: {
+    animation: {
+      numbers: {
+        type: 'number',
+        properties: ['x', 'y', 'x1', 'y1', 'axisWidth', 'xCPn', 'yCPn', 'xCPp1', 'yCPp1', 'borderWidth'],
       },
     },
-    scales: {
-      x: {
-        type: PCPScale.register().id,
-        offset: true,
-        gridLines: {
-          drawBorder: false,
-          display: false,
-        },
+  },
+  scales: {
+    x: {
+      type: PCPScale.id,
+      offset: true,
+      gridLines: {
+        drawBorder: false,
+        display: false,
       },
     },
+  },
 
-    tooltips: {
-      callbacks: {
-        title() {
-          return '';
-        },
-        label(tooltipItem, data) {
-          const label = data.labels[tooltipItem.index];
-          const ds = data.datasets
-            .filter((d) => !d._meta || !d._meta.hidden)
-            .map((d) => `${d.label}=${d.data[tooltipItem.index]}`);
+  tooltips: {
+    callbacks: {
+      title() {
+        return '';
+      },
+      label(tooltipItem, data) {
+        const label = data.labels[tooltipItem.index];
+        const ds = data.datasets
+          .filter((d) => !d._meta || !d._meta.hidden)
+          .map((d) => `${d.label}=${d.data[tooltipItem.index]}`);
 
-          return `${label}(${ds.join(', ')})`;
-        },
+        return `${label}(${ds.join(', ')})`;
       },
     },
-  };
-
-  return registerController(ParallelCoordinatesController);
+  },
 };
 
 export class ParallelCoordinatesChart extends Chart {
   constructor(item, config) {
-    super(item, patchControllerConfig(config, ParallelCoordinatesController));
+    super(item, patchController(config, ParallelCoordinatesController, [LinearAxis, LineSegment]));
   }
 }
 ParallelCoordinatesChart.id = ParallelCoordinatesController.id;
-
-export class LogarithmicParallelCoordinatesController extends ParallelCoordinatesController {}
-
-LogarithmicParallelCoordinatesController.id = 'logarithmicPcp';
-LogarithmicParallelCoordinatesController.register = () => {
-  ParallelCoordinatesController.register();
-  LogarithmicParallelCoordinatesController.prototype.datasetElementType = LogarithmicAxis.register();
-
-  LogarithmicParallelCoordinatesController.defaults = ParallelCoordinatesController.defaults;
-  return registerController(LogarithmicParallelCoordinatesController);
-};
-
-export class LogarithmicParallelChart extends Chart {
-  constructor(item, config) {
-    super(item, patchControllerConfig(config, LogarithmicParallelCoordinatesController));
-  }
-}
-LogarithmicParallelChart.id = LogarithmicParallelCoordinatesController.id;

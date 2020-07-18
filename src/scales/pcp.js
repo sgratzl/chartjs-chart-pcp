@@ -1,4 +1,4 @@
-import { CategoryScale, registerScale } from '../chart';
+import { CategoryScale } from '@sgratzl/chartjs-esm-facade';
 
 export class PCPScale extends CategoryScale {
   getLabels() {
@@ -12,4 +12,3 @@ export class PCPScale extends CategoryScale {
 
 PCPScale.id = 'pcp';
 PCPScale.defaults = CategoryScale.defaults;
-PCPScale.register = () => registerScale(PCPScale);

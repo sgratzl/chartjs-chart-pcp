@@ -1,1 +1,2 @@
-export * from './pcp';
+export * from './ParallelCoordinatesController';
+export * from './LogarithmicParallelCoordinatesController';
