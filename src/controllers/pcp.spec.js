@@ -1,11 +1,16 @@
 import matchChart from '../__tests__/matchChart';
-import { ParallelCoordinatesController, LogarithmicParallelCoordinatesController } from './pcp';
+import { ParallelCoordinatesController } from './ParallelCoordinatesController';
+import { LogarithmicParallelCoordinatesController } from './LogarithmicParallelCoordinatesController';
 import mtcars from './__tests__/mtcars';
+import { registry } from '@sgratzl/chartjs-esm-facade';
+import { LineSegment, LinearAxis, LogarithmicAxis } from '../elements';
+import { PCPScale } from '../scales';
 
 describe('pcp', () => {
   beforeAll(() => {
-    ParallelCoordinatesController.register();
-    LogarithmicParallelCoordinatesController.register();
+    registry.addControllers(ParallelCoordinatesController, LogarithmicParallelCoordinatesController);
+    registry.addElements(LineSegment, LinearAxis, LogarithmicAxis);
+    registry.addScales(PCPScale);
   });
   test('default', () => {
     const attrs = ['mpg', 'hp', 'wt', 'qsec', 'gear', 'drat', 'disp', 'cyl'];
