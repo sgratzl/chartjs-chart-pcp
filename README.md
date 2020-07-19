@@ -115,10 +115,10 @@ Variant A:
 
 ```js
 import Chart from 'chart.js';
-import { ParallelCoordinatesController } from 'chartjs-chart-pcp';
+import { ParallelCoordinatesController, LinearAxis, LineSegment, PCPScale } from 'chartjs-chart-pcp';
 
-// register controller in chart.js and ensure the defaults are set
-ParallelCoordinatesController.register();
+Chart.register(ParallelCoordinatesController, PCPScale, LineSegment);
+Chart.registry.addElements(LinearAxis);
 ...
 
 new Chart(ctx, {
@@ -141,7 +141,7 @@ new ParallelCoordinatesChart(ctx, {
 
 ```sh
 npm i -g yarn
-yarn set version 2.1.0
+yarn set version 2
 yarn
 yarn pnpify --sdk vscode
 ```
