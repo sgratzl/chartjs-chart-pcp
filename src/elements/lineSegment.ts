@@ -1,14 +1,33 @@
-import { Element, Line } from '@sgratzl/chartjs-esm-facade';
+import { Element, Line, ILineOptions } from '@sgratzl/chartjs-esm-facade';
 
-export class LineSegment extends Element {
-  _getLineParts(props) {
+export interface ILineSegmentOptions extends ILineOptions {
+  /**
+   * line tension > 0 (e.g., 0.3) to create bezier curves
+   * @default 0
+   */
+  tension: number;
+}
+
+export interface ILineSegmentProps {
+  x: number;
+  y: number;
+  x1: number;
+  y1: number;
+  xCPn: number;
+  yCPn: number;
+  xCPp1: number;
+  yCPp1: number;
+}
+
+export class LineSegment extends Element<ILineSegmentProps, ILineSegmentOptions> {
+  _getLineParts(props: Pick<ILineSegmentProps, 'x' | 'y' | 'x1' | 'y1'>) {
     // y = x * k + d
     const k = (props.y1 - props.y) / (props.x1 - props.x);
     const d = props.y - props.x * k;
     return { d, k };
   }
 
-  inRange(mouseX, mouseY, useFinalPosition) {
+  inRange(mouseX: number, mouseY: number, useFinalPosition: boolean) {
     const props = this.getProps(['x', 'x1', 'y', 'y1'], useFinalPosition);
     const dk = this._getLineParts(props);
     const targetY = mouseX * dk.k + dk.d;
@@ -23,7 +42,7 @@ export class LineSegment extends Element {
     );
   }
 
-  tooltipPosition(useFinalPosition) {
+  tooltipPosition(useFinalPosition: boolean) {
     const props = this.getProps(['x', 'x1', 'y', 'y1'], useFinalPosition);
     return {
       x: (props.x1 + props.x) / 2,
@@ -32,7 +51,7 @@ export class LineSegment extends Element {
     };
   }
 
-  getCenterPoint(useFinalPosition) {
+  getCenterPoint(useFinalPosition: boolean) {
     const props = this.getProps(['x', 'x1', 'y', 'y1'], useFinalPosition);
     return {
       x: (props.x1 + props.x) / 2,
@@ -40,23 +59,19 @@ export class LineSegment extends Element {
     };
   }
 
-  inXRange(mouseX, useFinalPosition) {
+  inXRange(mouseX: number, useFinalPosition: boolean) {
     const props = this.getProps(['x', 'x1'], useFinalPosition);
     const range = this.options.borderWidth * 2;
     return mouseX + range >= props.x && mouseX - range <= props.x1;
   }
 
-  inYRange(mouseY, useFinalPosition) {
+  inYRange(mouseY: number, useFinalPosition: boolean) {
     const props = this.getProps(['y', 'y1'], useFinalPosition);
     const range = this.options.borderWidth * 2;
     return mouseY + range >= Math.min(props.y, props.y1) && mouseY - range <= Math.max(props.y, props.y1);
   }
 
-  /**
-   *
-   * @param {CanvasRenderingContext2D} ctx
-   */
-  draw(ctx) {
+  draw(ctx: CanvasRenderingContext2D) {
     const props = this.getProps(['x', 'x1', 'y', 'y1', 'xCPn', 'yCPn', 'xCPp1', 'yCPp1']);
     const options = this.options;
     ctx.save();
@@ -82,13 +97,13 @@ export class LineSegment extends Element {
     ctx.stroke();
     ctx.restore();
   }
-}
 
-LineSegment.id = 'lineSegment';
-LineSegment.defaults = /*#__PURE__*/ Object.assign({}, Line.defaults, {
-  hoverBorderWidth: 4,
-  hoverBorderColor: 'rgba(0,0,0,0.8)',
-  borderCapStyle: 'round',
-  tension: 0,
-});
-LineSegment.defaultRoutes = Line.defaultRoutes;
+  static readonly id = 'lineSegment';
+  static readonly defaults = /*#__PURE__*/ Object.assign({}, Line.defaults, {
+    hoverBorderWidth: 4,
+    hoverBorderColor: 'rgba(0,0,0,0.8)',
+    borderCapStyle: 'round',
+    tension: 0,
+  });
+  static readonly defaultRoutes = Line.defaultRoutes;
+}

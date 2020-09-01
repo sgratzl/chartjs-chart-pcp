@@ -1,6 +1,37 @@
-import { LinearScale, LogarithmicScale, defaults, merge } from '@sgratzl/chartjs-esm-facade';
+import {
+  LinearScale,
+  LogarithmicScale,
+  defaults,
+  merge,
+  Scale,
+  ILogarithmicScaleOptions,
+  ICartesianScaleOptions,
+  Element,
+  ILinearScaleOptions,
+} from '@sgratzl/chartjs-esm-facade';
 
-function BaseMixin(superClass) {
+export interface IAxisOptions extends ICartesianScaleOptions {
+  // all options from
+  // https://www.chartjs.org/docs/latest/axes/cartesian/linear.html#linear-cartesian-axis
+  /**
+   * width of the visible axis
+   * @default 30
+   */
+  axisWidth: number;
+}
+
+export interface IAxisProps {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
+}
+
+function BaseMixin<O extends IAxisOptions>(superClass: { new (...args: any[]): Scale<O> & Element<IAxisProps, O> }) {
   return class extends superClass {
     constructor() {
       super({});
@@ -15,13 +46,15 @@ function BaseMixin(superClass) {
       this.top = props.top;
       this.bottom = props.bottom;
 
-      super.update(w, h);
+      super.update(w, h, null);
 
       this.top = props.top;
       this.bottom = props.bottom;
       this.configure();
     }
-    draw(ctx) {
+
+    draw(c: any) {
+      const ctx = c as CanvasRenderingContext2D;
       ctx.save();
       const props = this.getProps(['x', 'width', 'height', 'top', 'bottom', 'left', 'right']);
 
@@ -42,12 +75,16 @@ const scaleDefaults = {
   position: 'right',
 };
 
-export class LinearAxis extends BaseMixin(LinearScale) {}
+export type ILinearAxisOptions = IAxisOptions & ILinearScaleOptions;
 
-LinearAxis.id = 'linearAxis';
-LinearAxis.defaults = /*#__PURE__*/ merge({}, [defaults.scale, LinearScale.defaults, scaleDefaults]);
+export class LinearAxis extends BaseMixin<ILinearAxisOptions>(LinearScale as any) {
+  static readonly id = 'linearAxis';
+  static readonly defaults = /*#__PURE__*/ merge({}, [defaults.scale, LinearScale.defaults, scaleDefaults]);
+}
 
-export class LogarithmicAxis extends BaseMixin(LogarithmicScale) {}
+export type ILogarithmicAxisOptions = IAxisOptions & ILogarithmicScaleOptions;
 
-LogarithmicAxis.id = 'logarithmicAxis';
-LogarithmicAxis.defaults = /*#__PURE__*/ merge({}, [defaults.scale, LogarithmicScale.defaults, scaleDefaults]);
+export class LogarithmicAxis extends BaseMixin<ILogarithmicAxisOptions>(LogarithmicScale as any) {
+  static readonly id = 'logarithmicAxis';
+  static readonly defaults = /*#__PURE__*/ merge({}, [defaults.scale, LogarithmicScale.defaults, scaleDefaults]);
+}
