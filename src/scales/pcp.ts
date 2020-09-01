@@ -5,10 +5,10 @@ export class PCPScale extends CategoryScale {
     const datasets = this.chart.data.datasets;
     return this.getMatchingVisibleMetas().map((meta) => {
       const ds = datasets[meta.index];
-      return ds.label;
+      return ds.label!;
     });
   }
-}
 
-PCPScale.id = 'pcp';
-PCPScale.defaults = CategoryScale.defaults;
+  static readonly id = 'pcp';
+  static readonly defaults = CategoryScale.defaults;
+}
