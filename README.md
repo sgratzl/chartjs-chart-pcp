@@ -56,30 +56,9 @@ const config = {
 
 Two new elements were added: `lineSegment` as a subclass of line for a line segment between two axes and `linearAxis` for representing the vertical axis as a wrapper around a linear scale.
 
-```ts
-interface ILineSegmentOptions {
-  // all options from
-  // https://www.chartjs.org/docs/latest/charts/line.html#line-styling
+see https://github.com/sgratzl/chartjs-chart-pcp/blob/develop/src/elements/lineSegment.ts#L3-L9
 
-  /**
-   * line tension > 0 (e.g., 0.3) to create bezier curves
-   * @default 0
-   */
-  tension: number;
-}
-```
-
-```ts
-interface ILinearAxisOptions {
-  // all options from
-  // https://www.chartjs.org/docs/latest/axes/cartesian/linear.html#linear-cartesian-axis
-  /**
-   * width of the visible axis
-   * @default 30
-   */
-  axisWidth: number;
-}
-```
+see https://github.com/sgratzl/chartjs-chart-pcp/blob/develop/src/elements/axis.ts#L13-L21
 
 ## Scaling
 
