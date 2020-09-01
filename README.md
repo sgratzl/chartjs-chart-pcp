@@ -142,15 +142,22 @@ new ParallelCoordinatesChart(ctx, {
 ```sh
 npm i -g yarn
 yarn set version 2
+cat .yarnrc_patch.yml >> .yarnrc.yml
 yarn
-yarn pnpify --sdk vscode
+yarn pnpify --sdk
 ```
 
-### Building
+### Common commands
 
 ```sh
-yarn install
+yarn compile
+yarn test
+yarn lint
+yarn fix
 yarn build
+yarn docs
+yarn release
+yarn release:pre
 ```
 
 [npm-image]: https://badge.fury.io/js/chartjs-chart-pcp.svg
