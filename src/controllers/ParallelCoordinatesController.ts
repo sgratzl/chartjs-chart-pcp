@@ -168,20 +168,34 @@ export class ParallelCoordinatesController extends DatasetController<LineSegment
 
   _findOtherControllers() {
     const metas = this.chart.getSortedVisibleDatasetMetas();
-    return metas.filter((meta) => (meta.controller as any) !== this);
+    return metas.filter(
+      (meta) => (meta.controller as any) !== this && meta.controller instanceof ParallelCoordinatesController
+    );
+  }
+
+  removeBaseHoverStyle(element: LineSegment, datasetIndex: number, index: number) {
+    super.removeHoverStyle(element, datasetIndex, index);
   }
 
   removeHoverStyle(element: LineSegment, datasetIndex: number, index: number) {
     super.removeHoverStyle(element, datasetIndex, index);
     this._findOtherControllers().forEach((meta) => {
-      meta.controller.removeHoverStyle(meta.data[index], meta.index, index);
+      (meta.controller as ParallelCoordinatesController).removeBaseHoverStyle(
+        meta.data[index] as any,
+        meta.index,
+        index
+      );
     });
+  }
+
+  setBaseHoverStyle(element: LineSegment, datasetIndex: number, index: number) {
+    super.setHoverStyle(element, datasetIndex, index);
   }
 
   setHoverStyle(element: LineSegment, datasetIndex: number, index: number) {
     super.setHoverStyle(element, datasetIndex, index);
     this._findOtherControllers().forEach((meta) => {
-      meta.controller.setHoverStyle(meta.data[index], meta.index, index);
+      (meta.controller as ParallelCoordinatesController).setBaseHoverStyle(meta.data[index] as any, meta.index, index);
     });
   }
 

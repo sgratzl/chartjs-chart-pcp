@@ -8,8 +8,20 @@ export default function patchController<T, TYPE>(
   scales: IChartComponentLike = []
 ): T & { type: TYPE } {
   registry.addControllers(controller);
-  registry.addElements(elements);
-  registry.addScales(scales);
+  if (Array.isArray(elements)) {
+    for (const elem of elements) {
+      registry.addElements(elem);
+    }
+  } else {
+    registry.addElements(elements);
+  }
+  if (Array.isArray(scales)) {
+    for (const elem of scales) {
+      registry.addScales(elem);
+    }
+  } else {
+    registry.addScales(scales);
+  }
   const c = config as any;
   c.type = type;
   return c;
