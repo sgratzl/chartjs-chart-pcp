@@ -1,0 +1,6 @@
+{
+  "name": "chartjs-helpers-curve",
+  "main": "index.js",
+  "module": "index.esm.js",
+  "types": "index.d.ts"
+}

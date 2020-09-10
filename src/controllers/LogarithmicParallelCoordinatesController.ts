@@ -6,7 +6,7 @@ import {
   IChartDataset,
   ChartItem,
   IChartConfiguration,
-} from '@sgratzl/chartjs-esm-facade';
+} from 'chart.js';
 import { LineSegment, LogarithmicAxis, ILineSegmentOptions, ILogarithmicAxisOptions } from '../elements';
 import { ParallelCoordinatesController } from './ParallelCoordinatesController';
 import patchController from './patchController';
@@ -30,7 +30,7 @@ export type ILogarithmicParallelCoordinatesControllerDataset<T = number> = IChar
   ILogarithmicParallelCoordinatesControllerDatasetOptions
 >;
 
-export interface ILogarithmicParallelCoordinatesChartOptions extends ILogarithmicAxisOptions {}
+export type ILogarithmicParallelCoordinatesChartOptions = ILogarithmicAxisOptions;
 
 export type ILogarithmicParallelCoordinatesControllerConfiguration<T = number, L = string> = IChartConfiguration<
   'logarithmicPcp',

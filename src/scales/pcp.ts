@@ -1,4 +1,4 @@
-import { CategoryScale } from '@sgratzl/chartjs-esm-facade';
+import { CategoryScale } from 'chart.js';
 
 export class PCPScale extends CategoryScale {
   getLabels() {

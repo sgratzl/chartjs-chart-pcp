@@ -1,4 +1,4 @@
-import { Element, Line, ILineOptions } from '@sgratzl/chartjs-esm-facade';
+import { Element, Line, ILineOptions } from 'chart.js';
 
 export interface ILineSegmentOptions extends ILineOptions {
   /**

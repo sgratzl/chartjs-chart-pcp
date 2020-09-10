@@ -2,13 +2,13 @@ import {
   LinearScale,
   LogarithmicScale,
   defaults,
-  merge,
   Scale,
   ILogarithmicScaleOptions,
   ICartesianScaleOptions,
   Element,
   ILinearScaleOptions,
-} from '@sgratzl/chartjs-esm-facade';
+} from 'chart.js';
+import { merge } from '../../chartjs-helpers/core';
 
 export interface IAxisOptions extends ICartesianScaleOptions {
   // all options from

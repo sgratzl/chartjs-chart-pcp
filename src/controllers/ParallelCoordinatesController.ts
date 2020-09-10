@@ -2,8 +2,6 @@ import {
   Chart,
   DatasetController,
   LineController,
-  merge,
-  splineCurve,
   ChartItem,
   IControllerDatasetOptions,
   ScriptableAndArrayOptions,
@@ -14,7 +12,9 @@ import {
   UpdateMode,
   IChartComponent,
   IChartMeta,
-} from '@sgratzl/chartjs-esm-facade';
+} from 'chart.js';
+import { merge } from '../../chartjs-helpers/core';
+import { splineCurve } from '../../chartjs-helpers/curve';
 import { LinearAxis, LineSegment, ILinearAxisOptions, ILineSegmentOptions, ILineSegmentProps } from '../elements';
 import { PCPScale } from '../scales';
 import patchController from './patchController';
@@ -27,6 +27,11 @@ interface IExtendedChartMeta extends IChartMeta<LineSegment, LinearAxis> {
 export class ParallelCoordinatesController extends DatasetController<LineSegment, LinearAxis> {
   declare datasetElementType: IChartComponent;
   declare dataElementType: IChartComponent;
+
+  initialize() {
+    super.initialize();
+    this.enableOptionSharing = true;
+  }
 
   linkScales() {
     const ds = this.getDataset() as any;
@@ -114,7 +119,7 @@ export class ParallelCoordinatesController extends DatasetController<LineSegment
     const xScale = meta.xScale!;
 
     const firstOpts = this.resolveDataElementOptions(start, mode);
-    const sharedOptions = this.getSharedOptions(mode, rectangles[start], firstOpts);
+    const sharedOptions = this.getSharedOptions(firstOpts);
     const includeOptions = this.includeOptions(mode, sharedOptions);
     const getPoint = (metaIndex: number, index: number, defaultValue: { x: number; y: number }) => {
       const m = meta._metas[metaIndex];
@@ -130,6 +135,8 @@ export class ParallelCoordinatesController extends DatasetController<LineSegment
         y: Number.isNaN(y) ? defaultValue.y : y,
       };
     };
+
+    this.updateSharedOptions(sharedOptions, mode, firstOpts);
 
     for (let i = 0; i < rectangles.length; i++) {
       const index = start + i;
@@ -159,11 +166,10 @@ export class ParallelCoordinatesController extends DatasetController<LineSegment
       }
 
       if (includeOptions) {
-        properties.options = options;
+        properties.options = sharedOptions || options;
       }
       this.updateElement(rectangles[i], index, properties, mode);
     }
-    this.updateSharedOptions(sharedOptions, mode);
   }
 
   _findOtherControllers() {
