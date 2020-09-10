@@ -265,7 +265,7 @@ export type IParallelCoordinatesControllerDataset<T = number> = IChartDataset<
   IParallelCoordinatesControllerDatasetOptions
 >;
 
-export interface IParallelCoordinatesChartOptions extends ILinearAxisOptions {}
+export type IParallelCoordinatesChartOptions = ILinearAxisOptions;
 
 export type IParallelCoordinatesControllerConfiguration<T = number, L = string> = IChartConfiguration<
   'pcp',
