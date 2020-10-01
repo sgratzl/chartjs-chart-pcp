@@ -6,15 +6,15 @@ import {
   IControllerDatasetOptions,
   ScriptableAndArrayOptions,
   ICommonHoverOptions,
-  IChartDataset,
-  IChartConfiguration,
+  ICartesianScaleTypeRegistry,
   ITooltipItem,
   UpdateMode,
   IChartComponent,
   IChartMeta,
+  IChartConfiguration,
 } from 'chart.js';
-import { merge } from '../../chartjs-helpers/core';
-import { splineCurve } from '../../chartjs-helpers/curve';
+import { merge } from 'chart.js/helpers';
+import { splineCurve } from 'chart.js/helpers';
 import { LinearAxis, LineSegment, ILinearAxisOptions, ILineSegmentOptions, ILineSegmentProps } from '../elements';
 import { PCPScale } from '../scales';
 import patchController from './patchController';
@@ -68,7 +68,7 @@ export class ParallelCoordinatesController extends DatasetController<LineSegment
     this.updateAxis(axis, mode);
 
     const elements = meta.data || [];
-    this.updateElements(elements, 0, mode);
+    this.updateElements(elements, 0, elements.length, mode);
   }
 
   draw() {
@@ -113,7 +113,7 @@ export class ParallelCoordinatesController extends DatasetController<LineSegment
     axis.update();
   }
 
-  updateElements(rectangles: LineSegment[], start: number, mode: UpdateMode) {
+  updateElements(rectangles: LineSegment[], start: number, count: number, mode: UpdateMode) {
     const reset = mode === 'reset';
     const meta = this._cachedMeta as IExtendedChartMeta;
     const xScale = meta.xScale!;
@@ -138,12 +138,11 @@ export class ParallelCoordinatesController extends DatasetController<LineSegment
 
     this.updateSharedOptions(sharedOptions, mode, firstOpts);
 
-    for (let i = 0; i < rectangles.length; i++) {
-      const index = start + i;
-      const options = this.resolveDataElementOptions(index, mode);
+    for (let i = start; i < start + count; i++) {
+      const options = this.resolveDataElementOptions(i, mode);
 
-      const xy = getPoint(meta._metaIndex, index, { x: 0, y: 0 });
-      const xy_prev = getPoint(meta._metaIndex - 1, index, xy);
+      const xy = getPoint(meta._metaIndex, i, { x: 0, y: 0 });
+      const xy_prev = getPoint(meta._metaIndex - 1, i, xy);
 
       const properties: Partial<ILineSegmentProps> & { options?: ILineSegmentOptions } = {
         x: xy_prev.x,
@@ -153,8 +152,8 @@ export class ParallelCoordinatesController extends DatasetController<LineSegment
       };
 
       if (options.tension) {
-        const xy_prevprev = getPoint(meta._metaIndex - 2, index, xy_prev);
-        const xy_next = getPoint(meta._metaIndex + 1, index, xy);
+        const xy_prevprev = getPoint(meta._metaIndex - 2, i, xy_prev);
+        const xy_next = getPoint(meta._metaIndex + 1, i, xy);
 
         const controlPoints = splineCurve(xy_prevprev, xy_prev, xy, options.tension);
         const controlPoints1 = splineCurve(xy_prev, xy, xy_next, options.tension);
@@ -168,7 +167,7 @@ export class ParallelCoordinatesController extends DatasetController<LineSegment
       if (includeOptions) {
         properties.options = sharedOptions || options;
       }
-      this.updateElement(rectangles[i], index, properties, mode);
+      this.updateElement(rectangles[i], i, properties, mode);
     }
   }
 
@@ -260,29 +259,30 @@ export interface IParallelCoordinatesControllerDatasetOptions
     ScriptableAndArrayOptions<ILineSegmentOptions>,
     ScriptableAndArrayOptions<ICommonHoverOptions> {}
 
-export type IParallelCoordinatesControllerDataset<T = number> = IChartDataset<
-  T,
-  IParallelCoordinatesControllerDatasetOptions
->;
-
 export type IParallelCoordinatesChartOptions = ILinearAxisOptions;
 
-export type IParallelCoordinatesControllerConfiguration<T = number, L = string> = IChartConfiguration<
-  'pcp',
-  T,
-  L,
-  IParallelCoordinatesControllerDataset<T>,
-  IParallelCoordinatesChartOptions
->;
+declare module 'chart.js' {
+  enum ChartTypeEnum {
+    pcp = 'pcp',
+  }
+  interface IChartTypeRegistry {
+    pcp: {
+      chartOptions: IParallelCoordinatesChartOptions;
+      datasetOptions: IParallelCoordinatesControllerDatasetOptions;
+      defaultDataPoint: number[];
+      scales: keyof ICartesianScaleTypeRegistry;
+    };
+  }
+}
 
-export class ParallelCoordinatesChart<T = number, L = string> extends Chart<
-  T,
-  L,
-  IParallelCoordinatesControllerConfiguration<T, L>
+export class ParallelCoordinatesChart<DATA extends unknown[] = number[], LABEL = string> extends Chart<
+  'pcp',
+  DATA,
+  LABEL
 > {
   static id = ParallelCoordinatesController.id;
 
-  constructor(item: ChartItem, config: Omit<IParallelCoordinatesControllerConfiguration<T, L>, 'type'>) {
+  constructor(item: ChartItem, config: Omit<IChartConfiguration<'pcp', DATA, LABEL>, 'type'>) {
     super(item, patchController('pcp', config, ParallelCoordinatesController, [LinearAxis, LineSegment], PCPScale));
   }
 }

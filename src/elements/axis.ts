@@ -8,7 +8,7 @@ import {
   Element,
   ILinearScaleOptions,
 } from 'chart.js';
-import { merge } from '../../chartjs-helpers/core';
+import { merge } from 'chart.js/helpers';
 
 export interface IAxisOptions extends ICartesianScaleOptions {
   // all options from

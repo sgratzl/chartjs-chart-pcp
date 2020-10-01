@@ -3,9 +3,9 @@ import {
   IControllerDatasetOptions,
   ScriptableAndArrayOptions,
   ICommonHoverOptions,
-  IChartDataset,
   ChartItem,
   IChartConfiguration,
+  ICartesianScaleTypeRegistry,
 } from 'chart.js';
 import { LineSegment, LogarithmicAxis, ILineSegmentOptions, ILogarithmicAxisOptions } from '../elements';
 import { ParallelCoordinatesController } from './ParallelCoordinatesController';
@@ -25,29 +25,30 @@ export interface ILogarithmicParallelCoordinatesControllerDatasetOptions
     ScriptableAndArrayOptions<ILineSegmentOptions>,
     ScriptableAndArrayOptions<ICommonHoverOptions> {}
 
-export type ILogarithmicParallelCoordinatesControllerDataset<T = number> = IChartDataset<
-  T,
-  ILogarithmicParallelCoordinatesControllerDatasetOptions
->;
-
 export type ILogarithmicParallelCoordinatesChartOptions = ILogarithmicAxisOptions;
 
-export type ILogarithmicParallelCoordinatesControllerConfiguration<T = number, L = string> = IChartConfiguration<
-  'logarithmicPcp',
-  T,
-  L,
-  ILogarithmicParallelCoordinatesControllerDataset<T>,
-  ILogarithmicParallelCoordinatesChartOptions
->;
+declare module 'chart.js' {
+  enum ChartTypeEnum {
+    logarithmicPcp = 'logarithmicPcp',
+  }
+  interface IChartTypeRegistry {
+    logarithmicPcp: {
+      chartOptions: ILogarithmicParallelCoordinatesChartOptions;
+      datasetOptions: ILogarithmicParallelCoordinatesControllerDatasetOptions;
+      defaultDataPoint: number[];
+      scales: keyof ICartesianScaleTypeRegistry;
+    };
+  }
+}
 
-export class LogarithmicParallelCoordinatesChart<T = number, L = string> extends Chart<
-  T,
-  L,
-  ILogarithmicParallelCoordinatesControllerConfiguration<T, L>
+export class LogarithmicParallelCoordinatesChart<DATA extends unknown[] = number[], LABEL = string> extends Chart<
+  'logarithmicPcp',
+  DATA,
+  LABEL
 > {
   static id = LogarithmicParallelCoordinatesController.id;
 
-  constructor(item: ChartItem, config: Omit<ILogarithmicParallelCoordinatesControllerConfiguration<T, L>, 'type'>) {
+  constructor(item: ChartItem, config: Omit<IChartConfiguration<'logarithmicPcp', DATA, LABEL>, 'type'>) {
     super(
       item,
       patchController(
