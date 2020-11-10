@@ -3,15 +3,15 @@ import {
   DatasetController,
   LineController,
   ChartItem,
-  IControllerDatasetOptions,
+  ControllerDatasetOptions,
   ScriptableAndArrayOptions,
-  ICommonHoverOptions,
-  ICartesianScaleTypeRegistry,
-  ITooltipItem,
+  CommonHoverOptions,
+  CartesianScaleTypeRegistry,
+  TooltipItem,
   UpdateMode,
-  IChartComponent,
-  IChartMeta,
-  IChartConfiguration,
+  ChartComponent,
+  ChartMeta,
+  ChartConfiguration,
 } from 'chart.js';
 import { merge } from 'chart.js/helpers';
 import { splineCurve } from 'chart.js/helpers';
@@ -19,14 +19,14 @@ import { LinearAxis, LineSegment, ILinearAxisOptions, ILineSegmentOptions, ILine
 import { PCPScale } from '../scales';
 import patchController from './patchController';
 
-interface IExtendedChartMeta extends IChartMeta<LineSegment, LinearAxis> {
-  _metas: IChartMeta<any, any>[];
+interface IExtendedChartMeta extends ChartMeta<LineSegment, LinearAxis> {
+  _metas: ChartMeta<any, any>[];
   _metaIndex: number;
 }
 
 export class ParallelCoordinatesController extends DatasetController<LineSegment, LinearAxis> {
-  declare datasetElementType: IChartComponent;
-  declare dataElementType: IChartComponent;
+  declare datasetElementType: ChartComponent;
+  declare dataElementType: ChartComponent;
 
   initialize() {
     super.initialize();
@@ -240,7 +240,7 @@ export class ParallelCoordinatesController extends DatasetController<LineSegment
         title() {
           return '';
         },
-        label(tooltipItem: ITooltipItem) {
+        label(tooltipItem: TooltipItem) {
           const label = tooltipItem.chart.data.labels[tooltipItem.dataIndex];
           const ds = tooltipItem.chart
             .getSortedVisibleDatasetMetas()
@@ -254,23 +254,20 @@ export class ParallelCoordinatesController extends DatasetController<LineSegment
 }
 
 export interface IParallelCoordinatesControllerDatasetOptions
-  extends IControllerDatasetOptions,
+  extends ControllerDatasetOptions,
     ILinearAxisOptions,
     ScriptableAndArrayOptions<ILineSegmentOptions>,
-    ScriptableAndArrayOptions<ICommonHoverOptions> {}
+    ScriptableAndArrayOptions<CommonHoverOptions> {}
 
 export type IParallelCoordinatesChartOptions = ILinearAxisOptions;
 
 declare module 'chart.js' {
-  enum ChartTypeEnum {
-    pcp = 'pcp',
-  }
-  interface IChartTypeRegistry {
+  interface ChartTypeRegistry {
     pcp: {
       chartOptions: IParallelCoordinatesChartOptions;
       datasetOptions: IParallelCoordinatesControllerDatasetOptions;
       defaultDataPoint: number[];
-      scales: keyof ICartesianScaleTypeRegistry;
+      scales: keyof CartesianScaleTypeRegistry;
     };
   }
 }
@@ -282,7 +279,7 @@ export class ParallelCoordinatesChart<DATA extends unknown[] = number[], LABEL =
 > {
   static id = ParallelCoordinatesController.id;
 
-  constructor(item: ChartItem, config: Omit<IChartConfiguration<'pcp', DATA, LABEL>, 'type'>) {
+  constructor(item: ChartItem, config: Omit<ChartConfiguration<'pcp', DATA, LABEL>, 'type'>) {
     super(item, patchController('pcp', config, ParallelCoordinatesController, [LinearAxis, LineSegment], PCPScale));
   }
 }

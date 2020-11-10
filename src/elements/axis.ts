@@ -3,14 +3,14 @@ import {
   LogarithmicScale,
   defaults,
   Scale,
-  ILogarithmicScaleOptions,
-  ICartesianScaleOptions,
+  LogarithmicScaleOptions,
+  CartesianScaleOptions,
   Element,
-  ILinearScaleOptions,
+  LinearScaleOptions,
 } from 'chart.js';
 import { merge } from 'chart.js/helpers';
 
-export interface IAxisOptions extends ICartesianScaleOptions {
+export interface IAxisOptions extends CartesianScaleOptions {
   // all options from
   // https://www.chartjs.org/docs/latest/axes/cartesian/linear.html#linear-cartesian-axis
   /**
@@ -75,14 +75,14 @@ const scaleDefaults = {
   position: 'right',
 };
 
-export type ILinearAxisOptions = IAxisOptions & ILinearScaleOptions;
+export type ILinearAxisOptions = IAxisOptions & LinearScaleOptions;
 
 export class LinearAxis extends BaseMixin<ILinearAxisOptions>(LinearScale as any) {
   static readonly id = 'linearAxis';
   static readonly defaults = /*#__PURE__*/ merge({}, [defaults.scale, LinearScale.defaults, scaleDefaults]);
 }
 
-export type ILogarithmicAxisOptions = IAxisOptions & ILogarithmicScaleOptions;
+export type ILogarithmicAxisOptions = IAxisOptions & LogarithmicScaleOptions;
 
 export class LogarithmicAxis extends BaseMixin<ILogarithmicAxisOptions>(LogarithmicScale as any) {
   static readonly id = 'logarithmicAxis';

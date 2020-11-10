@@ -1,6 +1,6 @@
-import { Element, Line, ILineOptions } from 'chart.js';
+import { Element, LineElement, LineOptions } from 'chart.js';
 
-export interface ILineSegmentOptions extends ILineOptions {
+export interface ILineSegmentOptions extends LineOptions {
   /**
    * line tension > 0 (e.g., 0.3) to create bezier curves
    * @default 0
@@ -99,11 +99,11 @@ export class LineSegment extends Element<ILineSegmentProps, ILineSegmentOptions>
   }
 
   static readonly id = 'lineSegment';
-  static readonly defaults = /*#__PURE__*/ Object.assign({}, Line.defaults, {
+  static readonly defaults = /*#__PURE__*/ Object.assign({}, LineElement.defaults, {
     hoverBorderWidth: 4,
     hoverBorderColor: 'rgba(0,0,0,0.8)',
     borderCapStyle: 'round',
     tension: 0,
   });
-  static readonly defaultRoutes = Line.defaultRoutes;
+  static readonly defaultRoutes = LineElement.defaultRoutes;
 }

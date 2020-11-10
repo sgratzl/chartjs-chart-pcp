@@ -1,11 +1,11 @@
 import {
   Chart,
-  IControllerDatasetOptions,
+  ControllerDatasetOptions,
   ScriptableAndArrayOptions,
-  ICommonHoverOptions,
+  CommonHoverOptions,
   ChartItem,
-  IChartConfiguration,
-  ICartesianScaleTypeRegistry,
+  ChartConfiguration,
+  CartesianScaleTypeRegistry,
 } from 'chart.js';
 import { LineSegment, LogarithmicAxis, ILineSegmentOptions, ILogarithmicAxisOptions } from '../elements';
 import { ParallelCoordinatesController } from './ParallelCoordinatesController';
@@ -20,23 +20,20 @@ export class LogarithmicParallelCoordinatesController extends ParallelCoordinate
 }
 
 export interface ILogarithmicParallelCoordinatesControllerDatasetOptions
-  extends IControllerDatasetOptions,
+  extends ControllerDatasetOptions,
     ILogarithmicAxisOptions,
     ScriptableAndArrayOptions<ILineSegmentOptions>,
-    ScriptableAndArrayOptions<ICommonHoverOptions> {}
+    ScriptableAndArrayOptions<CommonHoverOptions> {}
 
 export type ILogarithmicParallelCoordinatesChartOptions = ILogarithmicAxisOptions;
 
 declare module 'chart.js' {
-  enum ChartTypeEnum {
-    logarithmicPcp = 'logarithmicPcp',
-  }
-  interface IChartTypeRegistry {
+  interface ChartTypeRegistry {
     logarithmicPcp: {
       chartOptions: ILogarithmicParallelCoordinatesChartOptions;
       datasetOptions: ILogarithmicParallelCoordinatesControllerDatasetOptions;
       defaultDataPoint: number[];
-      scales: keyof ICartesianScaleTypeRegistry;
+      scales: keyof CartesianScaleTypeRegistry;
     };
   }
 }
@@ -48,7 +45,7 @@ export class LogarithmicParallelCoordinatesChart<DATA extends unknown[] = number
 > {
   static id = LogarithmicParallelCoordinatesController.id;
 
-  constructor(item: ChartItem, config: Omit<IChartConfiguration<'logarithmicPcp', DATA, LABEL>, 'type'>) {
+  constructor(item: ChartItem, config: Omit<ChartConfiguration<'logarithmicPcp', DATA, LABEL>, 'type'>) {
     super(
       item,
       patchController(

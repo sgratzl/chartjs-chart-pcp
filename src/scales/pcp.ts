@@ -1,4 +1,4 @@
-import { CategoryScale, ICategoryScaleOptions } from 'chart.js';
+import { CategoryScale, CategoryScaleOptions } from 'chart.js';
 
 export class PCPScale extends CategoryScale {
   getLabels() {
@@ -14,13 +14,9 @@ export class PCPScale extends CategoryScale {
 }
 
 declare module 'chart.js' {
-  export enum ScaleTypeEnum {
-    pcp = 'pcp',
-  }
-
-  export interface IScaleTypeRegistry {
+  export interface ScaleTypeRegistry {
     pcp: {
-      options: ICategoryScaleOptions;
+      options: CategoryScaleOptions;
     };
   }
 }
