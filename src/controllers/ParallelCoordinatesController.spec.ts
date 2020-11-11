@@ -37,7 +37,7 @@ describe('pcp', () => {
             logarithmicAxis: {
               display: false,
             },
-          },
+          } as any,
           legend: {
             display: false,
           },
@@ -74,7 +74,7 @@ describe('pcp', () => {
             logarithmicAxis: {
               display: false,
             },
-          },
+          } as any,
           legend: {
             display: false,
           },
@@ -111,7 +111,7 @@ describe('pcp', () => {
             logarithmicAxis: {
               display: false,
             },
-          },
+          } as any,
           legend: {
             display: false,
           },
