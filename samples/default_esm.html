@@ -11,17 +11,17 @@
     <script type="importmap-shim">
       {
         "imports": {
-          "chart.js": "https://unpkg.com/chart.js@3.0.0-beta.6?module",
-          "chart.js/helpers": "https://unpkg.com/chart.js@3.0.0-beta.6/helpers/helpers.esm.js?module",
+          "chart.js": "https://unpkg.com/chart.js@3.0.0-beta.7?module",
+          "chart.js/helpers": "https://unpkg.com/chart.js@3.0.0-beta.7/helpers/helpers.esm.js?module",
           "chartjs-chart-pcp": "../build/index.esm.js"
         }
       }
     </script>
     <script type="module-shim">
-      import {Chart, Tooltip, Legend, Line} from 'chart.js';
+      import {Chart, Tooltip, Legend, LineElement} from 'chart.js';
       import { ParallelCoordinatesChart } from 'chartjs-chart-pcp';
 
-      Chart.register(Tooltip, Legend, Line);
+      Chart.register(Tooltip, Legend, LineElement);
 
       fetch('https://raw.githubusercontent.com/derhuerst/mtcars/master/index.json')
         .then((r) => r.json())

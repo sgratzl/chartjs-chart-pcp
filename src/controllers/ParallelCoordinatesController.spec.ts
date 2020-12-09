@@ -38,9 +38,6 @@ describe('pcp', () => {
               display: false,
             },
           } as any,
-          legend: {
-            display: false,
-          },
         },
       },
       1000,
@@ -75,9 +72,6 @@ describe('pcp', () => {
               display: false,
             },
           } as any,
-          legend: {
-            display: false,
-          },
         },
       },
       1000,
@@ -112,9 +106,6 @@ describe('pcp', () => {
               display: false,
             },
           } as any,
-          legend: {
-            display: false,
-          },
         },
       },
       1000,

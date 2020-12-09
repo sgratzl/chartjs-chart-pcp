@@ -235,18 +235,20 @@ export class ParallelCoordinatesController extends DatasetController<LineSegment
       },
     },
 
-    tooltips: {
-      callbacks: {
-        title() {
-          return '';
-        },
-        label(tooltipItem: TooltipItem) {
-          const label = tooltipItem.chart.data.labels[tooltipItem.dataIndex];
-          const ds = tooltipItem.chart
-            .getSortedVisibleDatasetMetas()
-            .map((d) => `${d.label}=${d.controller.getDataset().data[tooltipItem.dataIndex]}`);
+    plugins: {
+      tooltip: {
+        callbacks: {
+          title() {
+            return '';
+          },
+          label(tooltipItem: TooltipItem) {
+            const label = tooltipItem.chart.data.labels[tooltipItem.dataIndex];
+            const ds = tooltipItem.chart
+              .getSortedVisibleDatasetMetas()
+              .map((d) => `${d.label}=${d.controller.getDataset().data[tooltipItem.dataIndex]}`);
 
-          return `${label}(${ds.join(', ')})`;
+            return `${label}(${ds.join(', ')})`;
+          },
         },
       },
     },
