@@ -6,6 +6,7 @@ import {
   ChartItem,
   ChartConfiguration,
   CartesianScaleTypeRegistry,
+  ScriptableContext,
 } from 'chart.js';
 import { LineSegment, LogarithmicAxis, ILineSegmentOptions, ILogarithmicAxisOptions } from '../elements';
 import { ParallelCoordinatesController } from './ParallelCoordinatesController';
@@ -22,8 +23,8 @@ export class LogarithmicParallelCoordinatesController extends ParallelCoordinate
 export interface ILogarithmicParallelCoordinatesControllerDatasetOptions
   extends ControllerDatasetOptions,
     ILogarithmicAxisOptions,
-    ScriptableAndArrayOptions<ILineSegmentOptions>,
-    ScriptableAndArrayOptions<CommonHoverOptions> {}
+    ScriptableAndArrayOptions<ILineSegmentOptions, ScriptableContext>,
+    ScriptableAndArrayOptions<CommonHoverOptions, ScriptableContext> {}
 
 export type ILogarithmicParallelCoordinatesChartOptions = ILogarithmicAxisOptions;
 

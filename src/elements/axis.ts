@@ -46,11 +46,12 @@ function BaseMixin<O extends IAxisOptions>(superClass: { new (...args: any[]): S
       this.top = props.top;
       this.bottom = props.bottom;
 
-      super.update(w, h, null);
+      const r = super.update(w, h);
 
       this.top = props.top;
       this.bottom = props.bottom;
       this.configure();
+      return r;
     }
 
     draw(c: any) {

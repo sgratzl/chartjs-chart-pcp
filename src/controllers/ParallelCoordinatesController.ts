@@ -12,6 +12,7 @@ import {
   ChartComponent,
   ChartMeta,
   ChartConfiguration,
+  ScriptableContext,
 } from 'chart.js';
 import { merge } from 'chart.js/helpers';
 import { splineCurve } from 'chart.js/helpers';
@@ -37,7 +38,7 @@ export class ParallelCoordinatesController extends DatasetController<LineSegment
     const ds = this.getDataset() as any;
     ds.yAxisID = ds.label;
     super.linkScales();
-    this._cachedMeta.vScale = this._cachedMeta.dataset;
+    this._cachedMeta.vScale = this._cachedMeta.dataset as any;
   }
 
   addElements() {
@@ -258,8 +259,8 @@ export class ParallelCoordinatesController extends DatasetController<LineSegment
 export interface IParallelCoordinatesControllerDatasetOptions
   extends ControllerDatasetOptions,
     ILinearAxisOptions,
-    ScriptableAndArrayOptions<ILineSegmentOptions>,
-    ScriptableAndArrayOptions<CommonHoverOptions> {}
+    ScriptableAndArrayOptions<ILineSegmentOptions, ScriptableContext>,
+    ScriptableAndArrayOptions<CommonHoverOptions, ScriptableContext> {}
 
 export type IParallelCoordinatesChartOptions = ILinearAxisOptions;
 
