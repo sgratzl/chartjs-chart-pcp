@@ -15,7 +15,8 @@ import { PCPScale } from '../scales';
 
 export class LogarithmicParallelCoordinatesController extends ParallelCoordinatesController {
   static readonly id = 'logarithmicPcp';
-  static readonly defaults: any = /*#__PURE__*/ {
+
+  static readonly defaults: any = /* #__PURE__ */ {
     datasetElementType: LogarithmicAxis.id,
   };
 }
@@ -23,8 +24,8 @@ export class LogarithmicParallelCoordinatesController extends ParallelCoordinate
 export interface ILogarithmicParallelCoordinatesControllerDatasetOptions
   extends ControllerDatasetOptions,
     ILogarithmicAxisOptions,
-    ScriptableAndArrayOptions<ILineSegmentOptions, ScriptableContext>,
-    ScriptableAndArrayOptions<CommonHoverOptions, ScriptableContext> {}
+    ScriptableAndArrayOptions<ILineSegmentOptions, ScriptableContext<'logarithmicPcp'>>,
+    ScriptableAndArrayOptions<CommonHoverOptions, ScriptableContext<'logarithmicPcp'>> {}
 
 export type ILogarithmicParallelCoordinatesChartOptions = ILogarithmicAxisOptions;
 
@@ -33,7 +34,8 @@ declare module 'chart.js' {
     logarithmicPcp: {
       chartOptions: ILogarithmicParallelCoordinatesChartOptions;
       datasetOptions: ILogarithmicParallelCoordinatesControllerDatasetOptions;
-      defaultDataPoint: number[];
+      defaultDataPoint: number;
+      parsedDataType: { y: number };
       scales: keyof CartesianScaleTypeRegistry;
     };
   }

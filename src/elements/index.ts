@@ -1,2 +1,2 @@
-export * from './axis';
-export * from './lineSegment';
+export * from './LinearAxis';
+export * from './LineSegment';

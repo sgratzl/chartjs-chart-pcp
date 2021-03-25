@@ -1,7 +1,6 @@
 import {
   Chart,
   DatasetController,
-  LineController,
   ChartItem,
   ControllerDatasetOptions,
   ScriptableAndArrayOptions,
@@ -14,8 +13,8 @@ import {
   ChartConfiguration,
   ScriptableContext,
 } from 'chart.js';
-import { merge } from 'chart.js/helpers';
-import { splineCurve } from 'chart.js/helpers';
+import { merge, splineCurve } from 'chart.js/helpers';
+
 import { LinearAxis, LineSegment, ILinearAxisOptions, ILineSegmentOptions, ILineSegmentProps } from '../elements';
 import { PCPScale } from '../scales';
 import patchController from './patchController';
@@ -25,27 +24,29 @@ interface IExtendedChartMeta extends ChartMeta<LineSegment, LinearAxis> {
   _metaIndex: number;
 }
 
-export class ParallelCoordinatesController extends DatasetController<LineSegment, LinearAxis> {
+export class ParallelCoordinatesController extends DatasetController<'pcp', LineSegment, LinearAxis> {
   declare datasetElementType: ChartComponent;
+
   declare dataElementType: ChartComponent;
 
-  initialize() {
+  initialize(): void {
     super.initialize();
     this.enableOptionSharing = true;
   }
 
-  linkScales() {
+  linkScales(): void {
     const ds = this.getDataset() as any;
     ds.yAxisID = ds.label;
     super.linkScales();
     this._cachedMeta.vScale = this._cachedMeta.dataset as any;
   }
 
-  addElements() {
+  addElements(): void {
     super.addElements();
     const meta = this._cachedMeta;
     const scale = meta.dataset as any;
-    meta.yScale = meta.vScale = scale;
+    meta.yScale = scale;
+    meta.vScale = scale;
 
     scale.id = meta.yAxisID;
     scale.axis = 'y';
@@ -55,7 +56,7 @@ export class ParallelCoordinatesController extends DatasetController<LineSegment
     scale.ctx = this.chart.ctx;
   }
 
-  update(mode: UpdateMode) {
+  update(mode: UpdateMode): void {
     // from front to back
 
     const meta = this._cachedMeta as IExtendedChartMeta;
@@ -65,18 +66,20 @@ export class ParallelCoordinatesController extends DatasetController<LineSegment
       return;
     }
 
-    const axis = meta.dataset!;
-    this.updateAxis(axis, mode);
+    const axis = meta.dataset;
+    if (axis) {
+      this.updateAxis(axis, mode);
+    }
 
     const elements = meta.data || [];
     this.updateElements(elements, 0, elements.length, mode);
   }
 
-  draw() {
+  draw(): void {
     // from back to front
     const meta = this._cachedMeta as IExtendedChartMeta;
     const elements = meta.data || [];
-    const ctx = this.chart.ctx;
+    const { ctx } = this.chart;
     if (meta._metaIndex < 0) {
       return;
     }
@@ -92,10 +95,9 @@ export class ParallelCoordinatesController extends DatasetController<LineSegment
     });
   }
 
-  updateAxis(axis: LinearAxis, mode: UpdateMode) {
+  updateAxis(axis: LinearAxis, mode: UpdateMode): void {
     const meta = this._cachedMeta as IExtendedChartMeta;
-    const xScale = meta.xScale!;
-    const x = xScale.getPixelForTick(meta._metaIndex);
+    const x = meta.xScale?.getPixelForTick(meta._metaIndex) ?? 0;
 
     // TODO element options
     const properties = {
@@ -104,7 +106,7 @@ export class ParallelCoordinatesController extends DatasetController<LineSegment
       bottom: this.chart.chartArea.bottom,
       options: merge({}, [
         (this.chart.options as any).elements[this.datasetElementType.id],
-        this.resolveDatasetElementOptions(true),
+        this.resolveDatasetElementOptions(mode),
         {
           position: meta._metaIndex > 0 ? 'right' : 'left',
         },
@@ -114,50 +116,51 @@ export class ParallelCoordinatesController extends DatasetController<LineSegment
     axis.update();
   }
 
-  updateElements(rectangles: LineSegment[], start: number, count: number, mode: UpdateMode) {
+  updateElements(rectangles: LineSegment[], start: number, count: number, mode: UpdateMode): void {
     const reset = mode === 'reset';
     const meta = this._cachedMeta as IExtendedChartMeta;
-    const xScale = meta.xScale!;
 
     const firstOpts = this.resolveDataElementOptions(start, mode);
-    const sharedOptions = this.getSharedOptions(firstOpts);
+    const sharedOptions = this.getSharedOptions(firstOpts) ?? {};
     const includeOptions = this.includeOptions(mode, sharedOptions);
     const getPoint = (metaIndex: number, index: number, defaultValue: { x: number; y: number }) => {
       const m = meta._metas[metaIndex];
       if (!m) {
         return defaultValue;
       }
-      const x = xScale.getPixelForTick(metaIndex);
-      const yScale = m.vScale!;
-      const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(m._parsed[index][yScale.axis], index);
+      const x = meta.xScale?.getPixelForTick(metaIndex) ?? 0;
+      const yScale = m.vScale;
+      const y = reset
+        ? m.yScale?.getBasePixel()
+        : m.yScale?.getPixelForValue((m._parsed[index] as Record<string, number>)[yScale?.axis ?? 'y'], index);
 
       return {
         x,
-        y: Number.isNaN(y) ? defaultValue.y : y,
+        y: y == null || Number.isNaN(y) ? defaultValue.y : y,
       };
     };
 
     this.updateSharedOptions(sharedOptions, mode, firstOpts);
 
-    for (let i = start; i < start + count; i++) {
+    for (let i = start; i < start + count; i += 1) {
       const options = this.resolveDataElementOptions(i, mode);
 
       const xy = getPoint(meta._metaIndex, i, { x: 0, y: 0 });
-      const xy_prev = getPoint(meta._metaIndex - 1, i, xy);
+      const xyPrevious = getPoint(meta._metaIndex - 1, i, xy);
 
       const properties: Partial<ILineSegmentProps> & { options?: ILineSegmentOptions } = {
-        x: xy_prev.x,
-        y: xy_prev.y,
+        x: xyPrevious.x,
+        y: xyPrevious.y,
         x1: xy.x,
         y1: xy.y,
       };
 
       if (options.tension) {
-        const xy_prevprev = getPoint(meta._metaIndex - 2, i, xy_prev);
-        const xy_next = getPoint(meta._metaIndex + 1, i, xy);
+        const xyPrevPrevious = getPoint(meta._metaIndex - 2, i, xyPrevious);
+        const xyNext = getPoint(meta._metaIndex + 1, i, xy);
 
-        const controlPoints = splineCurve(xy_prevprev, xy_prev, xy, options.tension);
-        const controlPoints1 = splineCurve(xy_prev, xy, xy_next, options.tension);
+        const controlPoints = splineCurve(xyPrevPrevious, xyPrevious, xy, options.tension as number);
+        const controlPoints1 = splineCurve(xyPrevious, xy, xyNext, options.tension as number);
 
         properties.xCPn = controlPoints.next.x;
         properties.yCPn = controlPoints.next.y;
@@ -166,24 +169,24 @@ export class ParallelCoordinatesController extends DatasetController<LineSegment
       }
 
       if (includeOptions) {
-        properties.options = sharedOptions || options;
+        properties.options = (sharedOptions || options) as any;
       }
       this.updateElement(rectangles[i], i, properties, mode);
     }
   }
 
-  _findOtherControllers() {
+  private _findOtherControllers() {
     const metas = this.chart.getSortedVisibleDatasetMetas();
     return metas.filter(
       (meta) => (meta.controller as any) !== this && meta.controller instanceof ParallelCoordinatesController
     );
   }
 
-  removeBaseHoverStyle(element: LineSegment, datasetIndex: number, index: number) {
+  removeBaseHoverStyle(element: LineSegment, datasetIndex: number, index: number): void {
     super.removeHoverStyle(element, datasetIndex, index);
   }
 
-  removeHoverStyle(element: LineSegment, datasetIndex: number, index: number) {
+  removeHoverStyle(element: LineSegment, datasetIndex: number, index: number): void {
     super.removeHoverStyle(element, datasetIndex, index);
     this._findOtherControllers().forEach((meta) => {
       (meta.controller as ParallelCoordinatesController).removeBaseHoverStyle(
@@ -194,11 +197,11 @@ export class ParallelCoordinatesController extends DatasetController<LineSegment
     });
   }
 
-  setBaseHoverStyle(element: LineSegment, datasetIndex: number, index: number) {
+  setBaseHoverStyle(element: LineSegment, datasetIndex: number, index: number): void {
     super.setHoverStyle(element, datasetIndex, index);
   }
 
-  setHoverStyle(element: LineSegment, datasetIndex: number, index: number) {
+  setHoverStyle(element: LineSegment, datasetIndex: number, index: number): void {
     super.setHoverStyle(element, datasetIndex, index);
     this._findOtherControllers().forEach((meta) => {
       (meta.controller as ParallelCoordinatesController).setBaseHoverStyle(meta.data[index] as any, meta.index, index);
@@ -206,17 +209,10 @@ export class ParallelCoordinatesController extends DatasetController<LineSegment
   }
 
   static readonly id: string = 'pcp';
-  static readonly defaults: any = /*#__PURE__*/ {
-    datasetElementType: LinearAxis.id,
-    datasetElementOptions: ['axisWidth'],
-    dataElementType: LineSegment.id,
-    dataElementOptions: LineController.defaults.datasetElementOptions.concat([
-      'tension',
-      'hoverBackgroundColor',
-      'hoverBorderColor',
-      'hoverBorderWidth',
-    ]),
 
+  static readonly defaults: any = /* #__PURE__ */ {
+    datasetElementType: LinearAxis.id,
+    dataElementType: LineSegment.id,
     datasets: {
       animation: {
         numbers: {
@@ -225,6 +221,9 @@ export class ParallelCoordinatesController extends DatasetController<LineSegment
         },
       },
     },
+  };
+
+  static readonly overrides: any = /* #__PURE__ */ {
     scales: {
       x: {
         type: PCPScale.id,
@@ -242,8 +241,8 @@ export class ParallelCoordinatesController extends DatasetController<LineSegment
           title() {
             return '';
           },
-          label(tooltipItem: TooltipItem) {
-            const label = tooltipItem.chart.data.labels[tooltipItem.dataIndex];
+          label(tooltipItem: TooltipItem<'pcp'>) {
+            const label = tooltipItem.chart.data?.labels?.[tooltipItem.dataIndex];
             const ds = tooltipItem.chart
               .getSortedVisibleDatasetMetas()
               .map((d) => `${d.label}=${d.controller.getDataset().data[tooltipItem.dataIndex]}`);
@@ -259,8 +258,8 @@ export class ParallelCoordinatesController extends DatasetController<LineSegment
 export interface IParallelCoordinatesControllerDatasetOptions
   extends ControllerDatasetOptions,
     ILinearAxisOptions,
-    ScriptableAndArrayOptions<ILineSegmentOptions, ScriptableContext>,
-    ScriptableAndArrayOptions<CommonHoverOptions, ScriptableContext> {}
+    ScriptableAndArrayOptions<ILineSegmentOptions, ScriptableContext<'pcp'>>,
+    ScriptableAndArrayOptions<CommonHoverOptions, ScriptableContext<'pcp'>> {}
 
 export type IParallelCoordinatesChartOptions = ILinearAxisOptions;
 
@@ -269,7 +268,8 @@ declare module 'chart.js' {
     pcp: {
       chartOptions: IParallelCoordinatesChartOptions;
       datasetOptions: IParallelCoordinatesControllerDatasetOptions;
-      defaultDataPoint: number[];
+      defaultDataPoint: number;
+      parsedDataType: { y: number };
       scales: keyof CartesianScaleTypeRegistry;
     };
   }

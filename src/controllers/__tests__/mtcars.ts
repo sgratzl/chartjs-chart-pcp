@@ -1,5 +1,5 @@
 // https://raw.githubusercontent.com/derhuerst/mtcars/master/index.json
-export default [
+const data = [
   {
     model: 'Mazda RX4',
     mpg: 21,
@@ -449,3 +449,5 @@ export default [
     carb: 2,
   },
 ];
+
+export default data;

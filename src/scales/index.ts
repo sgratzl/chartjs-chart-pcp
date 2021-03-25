@@ -1,1 +1,1 @@
-export * from './pcp';
+export * from './PCPScale';

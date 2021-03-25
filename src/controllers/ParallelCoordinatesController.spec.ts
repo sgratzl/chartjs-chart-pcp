@@ -1,8 +1,8 @@
+import { registry } from 'chart.js';
 import createChart from '../__tests__/createChart';
 import { ParallelCoordinatesController } from './ParallelCoordinatesController';
 import { LogarithmicParallelCoordinatesController } from './LogarithmicParallelCoordinatesController';
 import mtcars from './__tests__/mtcars';
-import { registry } from 'chart.js';
 import { LineSegment, LinearAxis, LogarithmicAxis } from '../elements';
 import { PCPScale } from '../scales';
 
