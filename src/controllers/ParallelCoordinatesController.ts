@@ -13,7 +13,7 @@ import {
   ChartConfiguration,
   ScriptableContext,
 } from 'chart.js';
-import { merge, splineCurve } from 'chart.js/helpers';
+import { splineCurve } from 'chart.js/helpers';
 
 import { LinearAxis, LineSegment, ILinearAxisOptions, ILineSegmentOptions, ILineSegmentProps } from '../elements';
 import { PCPScale } from '../scales';
@@ -28,6 +28,8 @@ export class ParallelCoordinatesController extends DatasetController<'pcp', Line
   declare datasetElementType: ChartComponent;
 
   declare dataElementType: ChartComponent;
+
+  private declare _type: string;
 
   initialize(): void {
     super.initialize();
@@ -44,16 +46,18 @@ export class ParallelCoordinatesController extends DatasetController<'pcp', Line
   addElements(): void {
     super.addElements();
     const meta = this._cachedMeta;
-    const scale = meta.dataset as any;
+    const scale = meta.dataset as LinearAxis;
     meta.yScale = scale;
     meta.vScale = scale;
 
-    scale.id = meta.yAxisID;
-    scale.axis = 'y';
-    scale.type = this.dataElementType.id;
-    scale.options = {};
-    scale.chart = this.chart;
-    scale.ctx = this.chart.ctx;
+    Object.assign(scale, {
+      id: meta.yAxisID,
+      type: this.dataElementType.id,
+      axis: 'y',
+      chart: this.chart,
+      ctx: this.chart.ctx,
+    });
+    scale.init({} as any);
   }
 
   update(mode: UpdateMode): void {
@@ -99,18 +103,25 @@ export class ParallelCoordinatesController extends DatasetController<'pcp', Line
     const meta = this._cachedMeta as IExtendedChartMeta;
     const x = meta.xScale?.getPixelForTick(meta._metaIndex) ?? 0;
 
+    const active = mode === 'active';
+    const config = this.chart.config as any;
+    const scopeKeys = config.datasetElementScopeKeys(this._type, axis.id);
+    const prefixes = active ? [`${axis.id}Hover`, 'hover', axis.id, ''] : [axis.id, ''];
+    const scopes = config.getOptionScopes(this.getDataset(), scopeKeys);
+    // const names = Object.keys(defaults.elements[axis.id as 'linearAxis'] ?? {});
+    const context = () => (this as any).getContext(undefined, active);
+    // const values = config.resolveNamedOptions(scopes, names, context, prefixes);
+    const resolver = config.createResolver(scopes, context, prefixes);
+    // const baseOptions = (this.resolveDatasetElementOptions(mode) as unknown) as ILinearAxisOptions;
     // TODO element options
     const properties = {
       x,
       top: this.chart.chartArea.top,
       bottom: this.chart.chartArea.bottom,
-      options: merge({}, [
-        (this.chart.options as any).elements[this.datasetElementType.id],
-        this.resolveDatasetElementOptions(mode),
-        {
-          position: meta._metaIndex > 0 ? 'right' : 'left',
-        },
-      ]),
+      options: {
+        ...resolver,
+        position: meta._metaIndex > 0 ? 'right' : 'left',
+      },
     };
     super.updateElement(axis, undefined, properties, mode);
     axis.update();

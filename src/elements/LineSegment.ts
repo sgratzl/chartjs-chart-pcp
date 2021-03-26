@@ -110,4 +110,6 @@ export class LineSegment extends Element<ILineSegmentProps, ILineSegmentOptions>
   };
 
   static readonly defaultRoutes = LineElement.defaultRoutes;
+
+  static readonly descriptors = (LineElement as any).descriptors;
 }

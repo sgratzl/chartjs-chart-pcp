@@ -42,6 +42,10 @@ export class LinearAxis extends LinearScale<ILinearAxisOptions> {
 
   static readonly defaults: any = /* #__PURE__ */ merge({}, [defaults.scale, LinearScale.defaults, scaleDefaults]);
 
+  constructor() {
+    super({});
+  }
+
   update(): number {
     const w = this.options.axisWidth;
     // copy since it could return self
@@ -69,7 +73,7 @@ export class LinearAxis extends LinearScale<ILinearAxisOptions> {
     return r;
   }
 
-  draw(c: any): void {
+  draw(c: unknown): void {
     const ctx = c as CanvasRenderingContext2D;
     ctx.save();
     const props = ((this as unknown) as Element<IAxisProps, ILinearAxisOptions>).getProps([
@@ -100,11 +104,15 @@ export class LogarithmicAxis extends LogarithmicScale<ILogarithmicAxisOptions> {
 
   static readonly defaults: any = /* #__PURE__ */ merge({}, [defaults.scale, LogarithmicScale.defaults, scaleDefaults]);
 
+  constructor() {
+    super({});
+  }
+
   update(): number {
     return LinearAxis.prototype.update.call(this);
   }
 
-  draw(c: any): void {
+  draw(c: unknown): void {
     return LinearAxis.prototype.draw.call(this, c);
   }
 }
