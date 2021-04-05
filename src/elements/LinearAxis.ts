@@ -31,6 +31,8 @@ export interface IAxisProps {
 }
 
 const scaleDefaults = {
+  // a dummy scriptable option to enforce a context environment
+  dummyOption: (_ctx: unknown) => 0,
   axisWidth: 10,
   position: 'right',
 };
@@ -41,6 +43,12 @@ export class LinearAxis extends LinearScale<ILinearAxisOptions> {
   static readonly id = 'linearAxis';
 
   static readonly defaults: any = /* #__PURE__ */ merge({}, [defaults.scale, LinearScale.defaults, scaleDefaults]);
+
+  static readonly descriptors = /* #__PURE__ */ {
+    _scriptable: (name: string): boolean =>
+      !name.startsWith('before') && !name.startsWith('after') && name !== 'callback' && name !== 'parser',
+    _indexable: (name: string): boolean => name !== 'borderDash' && name !== 'tickBorderDash',
+  };
 
   constructor() {
     super({});
