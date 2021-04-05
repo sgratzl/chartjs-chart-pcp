@@ -19,7 +19,7 @@ Chart.js module for charting parallel coordinate plots (PCPs). Adding new chart 
 ## Install
 
 ```bash
-npm install --save chart.js@next chartjs-chart-pcp@next
+npm install --save chart.js chartjs-chart-pcp
 ```
 
 ## Usage

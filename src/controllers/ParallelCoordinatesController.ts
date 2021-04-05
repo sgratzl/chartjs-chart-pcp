@@ -103,23 +103,13 @@ export class ParallelCoordinatesController extends DatasetController<'pcp', Line
     const meta = this._cachedMeta as IExtendedChartMeta;
     const x = meta.xScale?.getPixelForTick(meta._metaIndex) ?? 0;
 
-    const active = mode === 'active';
-    const config = this.chart.config as any;
-    const scopeKeys = config.datasetElementScopeKeys(this._type, axis.id);
-    const prefixes = active ? [`${axis.id}Hover`, 'hover', axis.id, ''] : [axis.id, ''];
-    const scopes = config.getOptionScopes(this.getDataset(), scopeKeys);
-    // const names = Object.keys(defaults.elements[axis.id as 'linearAxis'] ?? {});
-    const context = () => (this as any).getContext(undefined, active);
-    // const values = config.resolveNamedOptions(scopes, names, context, prefixes);
-    const resolver = config.createResolver(scopes, context, prefixes);
-    // const baseOptions = (this.resolveDatasetElementOptions(mode) as unknown) as ILinearAxisOptions;
-    // TODO element options
+    const baseOptions = (this.resolveDatasetElementOptions(mode) as unknown) as ILinearAxisOptions;
     const properties = {
       x,
       top: this.chart.chartArea.top,
       bottom: this.chart.chartArea.bottom,
       options: {
-        ...resolver,
+        ...baseOptions,
         position: meta._metaIndex > 0 ? 'right' : 'left',
       },
     };
