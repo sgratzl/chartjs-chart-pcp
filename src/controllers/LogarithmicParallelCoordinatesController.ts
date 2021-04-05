@@ -17,8 +17,11 @@ export class LogarithmicParallelCoordinatesController extends ParallelCoordinate
   static readonly id = 'logarithmicPcp';
 
   static readonly defaults: any = /* #__PURE__ */ {
+    ...ParallelCoordinatesController.defaults,
     datasetElementType: LogarithmicAxis.id,
   };
+
+  static readonly overrides: any = /* #__PURE__ */ ParallelCoordinatesController.overrides;
 }
 
 export interface ILogarithmicParallelCoordinatesControllerDatasetOptions

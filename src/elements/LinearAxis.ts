@@ -31,6 +31,7 @@ export interface IAxisProps {
 }
 
 const scaleDefaults = {
+  axis: 'y',
   // a dummy scriptable option to enforce a context environment
   dummyOption: (_ctx: unknown) => 0,
   axisWidth: 10,
@@ -81,6 +82,11 @@ export class LinearAxis extends LinearScale<ILinearAxisOptions> {
     return r;
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  _computeLabelArea(): void {
+    return undefined;
+  }
+
   draw(c: unknown): void {
     const ctx = c as CanvasRenderingContext2D;
     ctx.save();
@@ -112,8 +118,15 @@ export class LogarithmicAxis extends LogarithmicScale<ILogarithmicAxisOptions> {
 
   static readonly defaults: any = /* #__PURE__ */ merge({}, [defaults.scale, LogarithmicScale.defaults, scaleDefaults]);
 
+  static readonly descriptors = /* #__PURE__ */ LinearAxis.descriptors;
+
   constructor() {
     super({});
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  _computeLabelArea(): void {
+    return undefined;
   }
 
   update(): number {

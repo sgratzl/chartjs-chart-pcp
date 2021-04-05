@@ -41,6 +41,11 @@ export class ParallelCoordinatesController extends DatasetController<'pcp', Line
     ds.yAxisID = ds.label;
     super.linkScales();
     this._cachedMeta.vScale = this._cachedMeta.dataset as any;
+    this._cachedMeta.vScale = this._cachedMeta.dataset as any;
+  }
+
+  private resolveAxisOptions(mode: UpdateMode) {
+    return (this.resolveDatasetElementOptions(mode) as unknown) as ILinearAxisOptions;
   }
 
   addElements(): void {
@@ -52,12 +57,11 @@ export class ParallelCoordinatesController extends DatasetController<'pcp', Line
 
     Object.assign(scale, {
       id: meta.yAxisID,
-      type: this.dataElementType.id,
-      axis: 'y',
+      type: this.datasetElementType.id,
       chart: this.chart,
       ctx: this.chart.ctx,
     });
-    scale.init({} as any);
+    scale.init(this.resolveAxisOptions('reset'));
   }
 
   update(mode: UpdateMode): void {
@@ -132,8 +136,8 @@ export class ParallelCoordinatesController extends DatasetController<'pcp', Line
       const x = meta.xScale?.getPixelForTick(metaIndex) ?? 0;
       const yScale = m.vScale;
       const y = reset
-        ? m.yScale?.getBasePixel()
-        : m.yScale?.getPixelForValue((m._parsed[index] as Record<string, number>)[yScale?.axis ?? 'y'], index);
+        ? yScale?.getBasePixel()
+        : yScale?.getPixelForValue((m._parsed[index] as Record<string, number>)[yScale?.axis ?? 'y'], index);
 
       return {
         x,
@@ -214,12 +218,10 @@ export class ParallelCoordinatesController extends DatasetController<'pcp', Line
   static readonly defaults: any = /* #__PURE__ */ {
     datasetElementType: LinearAxis.id,
     dataElementType: LineSegment.id,
-    datasets: {
-      animation: {
-        numbers: {
-          type: 'number',
-          properties: ['x', 'y', 'x1', 'y1', 'axisWidth', 'xCPn', 'yCPn', 'xCPp1', 'yCPp1', 'borderWidth'],
-        },
+    animations: {
+      numbers: {
+        type: 'number',
+        properties: ['x', 'y', 'x1', 'y1', 'axisWidth', 'xCPn', 'yCPn', 'xCPp1', 'yCPp1', 'borderWidth'],
       },
     },
   };
@@ -229,7 +231,7 @@ export class ParallelCoordinatesController extends DatasetController<'pcp', Line
       x: {
         type: PCPScale.id,
         offset: true,
-        gridLines: {
+        grid: {
           drawBorder: false,
           display: false,
         },
