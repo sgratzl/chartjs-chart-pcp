@@ -45,7 +45,7 @@ export class ParallelCoordinatesController extends DatasetController<'pcp', Line
   }
 
   private resolveAxisOptions(mode: UpdateMode) {
-    return (this.resolveDatasetElementOptions(mode) as unknown) as ILinearAxisOptions;
+    return this.resolveDatasetElementOptions(mode) as unknown as ILinearAxisOptions;
   }
 
   addElements(): void {
@@ -107,7 +107,7 @@ export class ParallelCoordinatesController extends DatasetController<'pcp', Line
     const meta = this._cachedMeta as IExtendedChartMeta;
     const x = meta.xScale?.getPixelForTick(meta._metaIndex) ?? 0;
 
-    const baseOptions = (this.resolveDatasetElementOptions(mode) as unknown) as ILinearAxisOptions;
+    const baseOptions = this.resolveDatasetElementOptions(mode) as unknown as ILinearAxisOptions;
     const properties = {
       x,
       top: this.chart.chartArea.top,

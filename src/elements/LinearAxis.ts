@@ -59,7 +59,7 @@ export class LinearAxis extends LinearScale<ILinearAxisOptions> {
     const w = this.options.axisWidth;
     // copy since it could return self
     const props = {
-      ...((this as unknown) as Element<IAxisProps, ILinearAxisOptions>).getProps([
+      ...(this as unknown as Element<IAxisProps, ILinearAxisOptions>).getProps([
         'width',
         'height',
         'top',
@@ -90,7 +90,7 @@ export class LinearAxis extends LinearScale<ILinearAxisOptions> {
   draw(c: unknown): void {
     const ctx = c as CanvasRenderingContext2D;
     ctx.save();
-    const props = ((this as unknown) as Element<IAxisProps, ILinearAxisOptions>).getProps([
+    const props = (this as unknown as Element<IAxisProps, ILinearAxisOptions>).getProps([
       'x',
       'width',
       'height',
