@@ -38,6 +38,7 @@ declare module 'chart.js' {
       chartOptions: ILogarithmicParallelCoordinatesChartOptions;
       datasetOptions: ILogarithmicParallelCoordinatesControllerDatasetOptions;
       defaultDataPoint: number;
+      metaExtensions: Record<string, never>;
       parsedDataType: { y: number };
       scales: keyof CartesianScaleTypeRegistry;
     };

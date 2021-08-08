@@ -61,7 +61,10 @@ export class ParallelCoordinatesController extends DatasetController<'pcp', Line
       chart: this.chart,
       ctx: this.chart.ctx,
     });
-    scale.init(this.resolveAxisOptions('reset'));
+    const options = this.resolveAxisOptions('reset');
+    // workaround for now
+    Object.assign(options, { setContext: () => 0 });
+    scale.init(options);
   }
 
   update(mode: UpdateMode): void {
@@ -272,6 +275,7 @@ declare module 'chart.js' {
       chartOptions: IParallelCoordinatesChartOptions;
       datasetOptions: IParallelCoordinatesControllerDatasetOptions;
       defaultDataPoint: number;
+      metaExtensions: Record<string, never>;
       parsedDataType: { y: number };
       scales: keyof CartesianScaleTypeRegistry;
     };

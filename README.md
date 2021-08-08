@@ -145,8 +145,6 @@ yarn lint
 yarn fix
 yarn build
 yarn docs
-yarn release
-yarn release:pre
 ```
 
 [npm-image]: https://badge.fury.io/js/chartjs-chart-pcp.svg
