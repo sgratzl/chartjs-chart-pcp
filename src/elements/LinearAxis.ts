@@ -79,7 +79,7 @@ export class LinearAxis extends LinearScale<ILinearAxisOptions> {
     this.top = props.top;
     this.bottom = props.bottom;
     this.configure();
-    return r;
+    return r as any;
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -139,8 +139,8 @@ export class LogarithmicAxis extends LogarithmicScale<ILogarithmicAxisOptions> {
 }
 
 declare module 'chart.js' {
-  export interface ElementOptionsByType {
-    linearAxis: ILinearAxisOptions;
-    logarithmicAxis: ILogarithmicAxisOptions;
+  export interface ElementOptionsByType<TType extends ChartType> {
+    linearAxis: ScriptableAndArrayOptions<ILinearAxisOptions, ScriptableContext<TType>>;
+    logarithmicAxis: ScriptableAndArrayOptions<ILogarithmicAxisOptions, ScriptableContext<TType>>;
   }
 }
