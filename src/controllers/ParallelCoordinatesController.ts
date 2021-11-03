@@ -286,9 +286,9 @@ export interface IParallelCoordinatesControllerDatasetOptions
   extends ControllerDatasetOptions,
     ILinearAxisOptions,
     ScriptableAndArrayOptions<ILineSegmentOptions, ScriptableContext<'pcp'>>,
-  ScriptableAndArrayOptions<CommonHoverOptions, ScriptableContext<'pcp'>> {
-  stack: string
-  }
+    ScriptableAndArrayOptions<CommonHoverOptions, ScriptableContext<'pcp'>> {
+  stack: string;
+}
 
 export type IParallelCoordinatesChartOptions = ILinearAxisOptions;
 
