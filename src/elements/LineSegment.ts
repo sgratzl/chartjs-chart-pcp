@@ -123,3 +123,9 @@ export class LineSegment extends Element<ILineSegmentProps & AnyObject, ILineSeg
 
   static readonly descriptors = (LineElement as any).descriptors;
 }
+
+declare module 'chart.js' {
+  export interface ElementOptionsByType<TType extends ChartType> {
+    lineSegment: ScriptableAndArrayOptions<ILineSegmentOptions, ScriptableContext<TType>>;
+  }
+}
