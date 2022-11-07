@@ -1,8 +1,6 @@
 /* eslint-env node */
-
 module.exports = {
   testEnvironment: 'jsdom',
   preset: 'ts-jest/presets/js-with-ts-esm',
-  rootDir: './src',
-  testRegex: '((\\.|/)(test|spec))\\.[jt]sx?$',
+  testRegex: '((\\.|/)(test|spec))\\.m?tsx?$',
 };
