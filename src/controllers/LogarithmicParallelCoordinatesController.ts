@@ -6,6 +6,7 @@ import {
   ChartItem,
   ChartConfiguration,
   ScriptableContext,
+  CartesianScaleTypeRegistry,
 } from 'chart.js';
 import { LineSegment, LogarithmicAxis, ILineSegmentOptions, ILogarithmicAxisOptions } from '../elements';
 import { ParallelCoordinatesController } from './ParallelCoordinatesController';

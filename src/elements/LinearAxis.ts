@@ -6,6 +6,9 @@ import {
   CartesianScaleOptions,
   Element,
   LinearScaleOptions,
+  ScriptableAndArrayOptions,
+  ScriptableContext,
+  ChartType,
 } from 'chart.js';
 import { merge } from 'chart.js/helpers';
 

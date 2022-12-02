@@ -12,6 +12,7 @@ import {
   ChartConfiguration,
   ScriptableContext,
   Element,
+  CartesianScaleTypeRegistry,
 } from 'chart.js';
 import { splineCurve } from 'chart.js/helpers';
 
