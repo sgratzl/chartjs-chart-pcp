@@ -34,7 +34,7 @@ npm install --save chart.js chartjs-chart-pcp
 
 ## Usage
 
-see [Samples](https://github.com/sgratzl/chartjs-chart-pcp/tree/master/samples) on Github
+see [Samples](https://github.com/sgratzl/chartjs-chart-pcp/tree/main/samples) on Github
 
 ## PCP
 

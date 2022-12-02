@@ -1,5 +1,5 @@
 import type { AnyObject } from '../controllers/ParallelCoordinatesController';
-import { Element, LineElement, LineOptions } from 'chart.js';
+import { ChartType, Element, LineElement, LineOptions, ScriptableAndArrayOptions, ScriptableContext } from 'chart.js';
 
 export interface ILineSegmentOptions extends LineOptions {
   /**
