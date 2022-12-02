@@ -1,4 +1,4 @@
-import { CategoryScale } from 'chart.js';
+import { CategoryScale, CategoryScaleOptions } from 'chart.js';
 
 export class PCPScale extends CategoryScale {
   getLabels(): string[] {
