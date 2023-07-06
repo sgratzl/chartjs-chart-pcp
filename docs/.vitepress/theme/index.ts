@@ -1,6 +1,6 @@
 import Theme from 'vitepress/theme';
 import { createTypedChart } from 'vue-chartjs';
-import { CategoryScale, Tooltip } from 'chart.js';
+import { CategoryScale, Tooltip, LinearScale, LogarithmicScale, Legend } from 'chart.js';
 import {
   LineSegment,
   ParallelCoordinatesController,
@@ -14,13 +14,14 @@ export default {
   ...Theme,
   enhanceApp({ app }) {
     app.component(
-      'PCPtChart',
+      'PCPChart',
       createTypedChart('pcp', [
         CategoryScale,
         Tooltip,
+        Legend,
+        LinearScale,
+        LogarithmicScale,
         LineSegment,
-        LinearAxis,
-        LogarithmicAxis,
         PCPScale,
         ParallelCoordinatesController,
         LogarithmicParallelCoordinatesController,

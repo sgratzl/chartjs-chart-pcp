@@ -48,6 +48,4 @@ const config = {
 
 Two new elements were added: `lineSegment` as a subclass of line for a line segment between two axes and `linearAxis` for representing the vertical axis as a wrapper around a linear scale.
 
-see https://github.com/sgratzl/chartjs-chart-pcp/blob/develop/src/elements/lineSegment.ts#L3-L9
-
-see https://github.com/sgratzl/chartjs-chart-pcp/blob/develop/src/elements/axis.ts#L13-L21
+see [ILineSegmentOptions](/api/interfaces/interface.ILineSegmentOptions.html) and [ILinearAxisOptions](/api/type-aliases/type-alias.ILinearAxisOptions.html)

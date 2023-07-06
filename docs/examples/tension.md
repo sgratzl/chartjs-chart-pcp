@@ -17,7 +17,7 @@ import {config} from './tension';
 
 :::code-group
 
-<<< ./tension.ts#config [config]
+<<< ./basic.ts#config [config]
 
 <<< ./tension.ts#data [data]
 

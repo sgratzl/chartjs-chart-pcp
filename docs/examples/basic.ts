@@ -1,5 +1,6 @@
 import type { ChartConfiguration } from 'chart.js';
-import type {} from '../../src';
+import { Chart } from 'chart.js';
+import { LinearAxis, LogarithmicAxis } from '../../src';
 
 // #region data
 import mtcars from './data/index.json';
@@ -15,6 +16,8 @@ export const data: ChartConfiguration<'pcp'>['data'] = {
 };
 
 // #endregion
+
+Chart.registry.addElements(LinearAxis, LogarithmicAxis);
 
 // #region config
 export const config: ChartConfiguration<'pcp'> = {
