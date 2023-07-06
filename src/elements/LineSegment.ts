@@ -21,6 +21,9 @@ export interface ILineSegmentProps {
 }
 
 export class LineSegment extends Element<ILineSegmentProps & AnyObject, ILineSegmentOptions & AnyObject> {
+  /**
+   * @internal
+   */
   // eslint-disable-next-line class-methods-use-this
   _getLineParts(props: Pick<ILineSegmentProps, 'x' | 'y' | 'x1' | 'y1'>): { d: number; k: number } {
     // y = x * k + d
@@ -29,6 +32,9 @@ export class LineSegment extends Element<ILineSegmentProps & AnyObject, ILineSeg
     return { d, k };
   }
 
+  /**
+   * @internal
+   */
   inRange(mouseX: number, mouseY: number, useFinalPosition: boolean): boolean {
     const props = this.getProps(['x', 'x1', 'y', 'y1'], useFinalPosition) as unknown as ILineSegmentProps;
     const dk = this._getLineParts(props);
@@ -44,6 +50,9 @@ export class LineSegment extends Element<ILineSegmentProps & AnyObject, ILineSeg
     );
   }
 
+  /**
+   * @internal
+   */
   tooltipPosition(useFinalPosition: boolean): { x: number; y: number; padding: number } {
     const props = this.getProps(['x', 'x1', 'y', 'y1'], useFinalPosition) as unknown as ILineSegmentProps;
     return {
@@ -53,6 +62,9 @@ export class LineSegment extends Element<ILineSegmentProps & AnyObject, ILineSeg
     };
   }
 
+  /**
+   * @internal
+   */
   getCenterPoint(useFinalPosition: boolean): { x: number; y: number } {
     const props = this.getProps(['x', 'x1', 'y', 'y1'], useFinalPosition) as unknown as ILineSegmentProps;
     return {
@@ -61,18 +73,27 @@ export class LineSegment extends Element<ILineSegmentProps & AnyObject, ILineSeg
     };
   }
 
+  /**
+   * @internal
+   */
   inXRange(mouseX: number, useFinalPosition: boolean): boolean {
     const props = this.getProps(['x', 'x1'], useFinalPosition) as unknown as ILineSegmentProps;
     const range = this.options.borderWidth * 2;
     return mouseX + range >= props.x && mouseX - range <= props.x1;
   }
 
+  /**
+   * @internal
+   */
   inYRange(mouseY: number, useFinalPosition: boolean): boolean {
     const props = this.getProps(['y', 'y1'], useFinalPosition) as unknown as ILineSegmentProps;
     const range = this.options.borderWidth * 2;
     return mouseY + range >= Math.min(props.y, props.y1) && mouseY - range <= Math.max(props.y, props.y1);
   }
 
+  /**
+   * @internal
+   */
   draw(ctx: CanvasRenderingContext2D): void {
     const props = this.getProps([
       'x',
@@ -109,8 +130,14 @@ export class LineSegment extends Element<ILineSegmentProps & AnyObject, ILineSeg
     ctx.restore();
   }
 
+  /**
+   * @internal
+   */
   static readonly id = 'lineSegment';
 
+  /**
+   * @internal
+   */
   static readonly defaults = /* #__PURE__ */ {
     ...LineElement.defaults,
     hoverBorderWidth: 4,
@@ -119,8 +146,14 @@ export class LineSegment extends Element<ILineSegmentProps & AnyObject, ILineSeg
     tension: 0,
   };
 
+  /**
+   * @internal
+   */
   static readonly defaultRoutes = LineElement.defaultRoutes;
 
+  /**
+   * @internal
+   */
   static readonly descriptors = (LineElement as any).descriptors;
 }
 

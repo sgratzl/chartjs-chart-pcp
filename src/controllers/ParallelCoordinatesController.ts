@@ -32,17 +32,29 @@ export class ParallelCoordinatesController extends DatasetController<
   LineSegment & Element<AnyObject, AnyObject>,
   LinearAxis & Element<AnyObject, AnyObject>
 > {
+  /**
+   * @internal
+   */
   declare datasetElementType: ChartComponent;
 
+  /**
+   * @internal
+   */
   declare dataElementType: ChartComponent;
 
   private declare _type: string;
 
+  /**
+   * @internal
+   */
   initialize(): void {
     super.initialize();
     this.enableOptionSharing = true;
   }
 
+  /**
+   * @internal
+   */
   linkScales(): void {
     const ds = this.getDataset() as any;
     ds.yAxisID = ds.label;
@@ -55,6 +67,9 @@ export class ParallelCoordinatesController extends DatasetController<
     return this.resolveDatasetElementOptions(mode) as unknown as ILinearAxisOptions;
   }
 
+  /**
+   * @internal
+   */
   addElements(): void {
     super.addElements();
     const meta = this._cachedMeta;
@@ -74,6 +89,9 @@ export class ParallelCoordinatesController extends DatasetController<
     scale.init(options);
   }
 
+  /**
+   * @internal
+   */
   update(mode: UpdateMode): void {
     // from front to back
 
@@ -93,6 +111,9 @@ export class ParallelCoordinatesController extends DatasetController<
     this.updateElements(elements, 0, elements.length, mode);
   }
 
+  /**
+   * @internal
+   */
   draw(): void {
     // from back to front
     const meta = this._cachedMeta;
@@ -114,6 +135,9 @@ export class ParallelCoordinatesController extends DatasetController<
     });
   }
 
+  /**
+   * @internal
+   */
   updateAxis(axis: LinearAxis & Element<AnyObject, AnyObject>, mode: UpdateMode): void {
     const meta = this._cachedMeta;
     const metaE = meta as unknown as IExtendedChartMeta;
@@ -133,6 +157,9 @@ export class ParallelCoordinatesController extends DatasetController<
     axis.update();
   }
 
+  /**
+   * @internal
+   */
   updateElements(
     rectangles: (LineSegment & Element<AnyObject, AnyObject>)[],
     start: number,
@@ -204,6 +231,9 @@ export class ParallelCoordinatesController extends DatasetController<
     );
   }
 
+  /**
+   * @internal
+   */
   removeBaseHoverStyle(
     element: LineSegment & Element<AnyObject, AnyObject>,
     datasetIndex: number,
@@ -212,6 +242,9 @@ export class ParallelCoordinatesController extends DatasetController<
     super.removeHoverStyle(element, datasetIndex, index);
   }
 
+  /**
+   * @internal
+   */
   removeHoverStyle(element: LineSegment & Element<AnyObject, AnyObject>, datasetIndex: number, index: number): void {
     super.removeHoverStyle(element, datasetIndex, index);
     this._findOtherControllers().forEach((meta) => {
@@ -223,10 +256,16 @@ export class ParallelCoordinatesController extends DatasetController<
     });
   }
 
+  /**
+   * @internal
+   */
   setBaseHoverStyle(element: LineSegment & Element<AnyObject, AnyObject>, datasetIndex: number, index: number): void {
     super.setHoverStyle(element, datasetIndex, index);
   }
 
+  /**
+   * @internal
+   */
   setHoverStyle(element: LineSegment & Element<AnyObject, AnyObject>, datasetIndex: number, index: number): void {
     super.setHoverStyle(element, datasetIndex, index);
     this._findOtherControllers().forEach((meta) => {
@@ -238,8 +277,14 @@ export class ParallelCoordinatesController extends DatasetController<
     });
   }
 
+  /**
+   * @internal
+   */
   static readonly id: string = 'pcp';
 
+  /**
+   * @internal
+   */
   static readonly defaults: any = /* #__PURE__ */ {
     datasetElementType: LinearAxis.id,
     dataElementType: LineSegment.id,
@@ -251,6 +296,9 @@ export class ParallelCoordinatesController extends DatasetController<
     },
   };
 
+  /**
+   * @internal
+   */
   static readonly overrides: any = /* #__PURE__ */ {
     scales: {
       x: {
