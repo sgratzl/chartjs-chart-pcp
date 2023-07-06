@@ -14,13 +14,22 @@ import patchController from './patchController';
 import { PCPScale } from '../scales';
 
 export class LogarithmicParallelCoordinatesController extends ParallelCoordinatesController {
+  /**
+   * @internal
+   */
   static readonly id = 'logarithmicPcp';
 
+  /**
+   * @internal
+   */
   static readonly defaults: any = /* #__PURE__ */ {
     ...ParallelCoordinatesController.defaults,
     datasetElementType: LogarithmicAxis.id,
   };
 
+  /**
+   * @internal
+   */
   static readonly overrides: any = /* #__PURE__ */ ParallelCoordinatesController.overrides;
 }
 

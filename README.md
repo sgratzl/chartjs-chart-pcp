@@ -34,13 +34,15 @@ npm install --save chart.js chartjs-chart-pcp
 
 ## Usage
 
-see [Samples](https://github.com/sgratzl/chartjs-chart-pcp/tree/main/samples) on Github
+see [Examples](https://www.sgratzl.com/chartjs-chart-pcp/examples/)
+
+[![Open in CodePen][codepen]](https://codepen.io/sgratzl/pen/wvKQvyM)
 
 ## PCP
 
 ### Data Structure
 
-the data items are the regular data items along with their labels. For each attribute there is an dataset. e.g., in the following example there are three items (A, B, C) with three axes / features (f1, f2, f3).
+the data items are the regular data items along with their labels. For each attribute there is a dataset. e.g., in the following example there are three items (A, B, C) with three axes / features (f1, f2, f3).
 
 ```js
 const objs = [

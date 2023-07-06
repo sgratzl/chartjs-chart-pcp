@@ -117,25 +117,43 @@ export class LinearAxis extends LinearScale<ILinearAxisOptions> {
 export type ILogarithmicAxisOptions = IAxisOptions & LogarithmicScaleOptions;
 
 export class LogarithmicAxis extends LogarithmicScale<ILogarithmicAxisOptions> {
+  /**
+   * @internal
+   */
   static readonly id = 'logarithmicAxis';
 
+  /**
+   * @internal
+   */
   static readonly defaults: any = /* #__PURE__ */ merge({}, [defaults.scale, LogarithmicScale.defaults, scaleDefaults]);
 
+  /**
+   * @internal
+   */
   static readonly descriptors = /* #__PURE__ */ LinearAxis.descriptors;
 
   constructor() {
     super({});
   }
 
+  /**
+   * @internal
+   */
   // eslint-disable-next-line class-methods-use-this
   _computeLabelArea(): void {
     return undefined;
   }
 
+  /**
+   * @internal
+   */
   update(): number {
     return LinearAxis.prototype.update.call(this);
   }
 
+  /**
+   * @internal
+   */
   draw(c: unknown): void {
     return LinearAxis.prototype.draw.call(this, c);
   }
