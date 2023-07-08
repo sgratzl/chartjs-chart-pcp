@@ -277,9 +277,6 @@ export class ParallelCoordinatesController extends DatasetController<
     });
   }
 
-  /**
-   * @internal
-   */
   static readonly id: string = 'pcp';
 
   /**
