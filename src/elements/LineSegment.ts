@@ -130,9 +130,6 @@ export class LineSegment extends Element<ILineSegmentProps & AnyObject, ILineSeg
     ctx.restore();
   }
 
-  /**
-   * @internal
-   */
   static readonly id = 'lineSegment';
 
   /**
