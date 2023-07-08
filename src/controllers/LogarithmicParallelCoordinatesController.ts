@@ -14,9 +14,6 @@ import patchController from './patchController';
 import { PCPScale } from '../scales';
 
 export class LogarithmicParallelCoordinatesController extends ParallelCoordinatesController {
-  /**
-   * @internal
-   */
   static readonly id = 'logarithmicPcp';
 
   /**

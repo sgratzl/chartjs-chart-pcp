@@ -9,9 +9,6 @@ export class PCPScale extends CategoryScale {
     });
   }
 
-  /**
-   * @internal
-   */
   static readonly id = 'pcp';
 
   /**

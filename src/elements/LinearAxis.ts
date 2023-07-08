@@ -117,9 +117,6 @@ export class LinearAxis extends LinearScale<ILinearAxisOptions> {
 export type ILogarithmicAxisOptions = IAxisOptions & LogarithmicScaleOptions;
 
 export class LogarithmicAxis extends LogarithmicScale<ILogarithmicAxisOptions> {
-  /**
-   * @internal
-   */
   static readonly id = 'logarithmicAxis';
 
   /**
