@@ -17,7 +17,7 @@ export class LogarithmicParallelCoordinatesController extends ParallelCoordinate
   static readonly id = 'logarithmicPcp';
 
   /**
-   * @internal
+   * @hidden
    */
   static readonly defaults: any = /* #__PURE__ */ {
     ...ParallelCoordinatesController.defaults,
@@ -25,7 +25,7 @@ export class LogarithmicParallelCoordinatesController extends ParallelCoordinate
   };
 
   /**
-   * @internal
+   * @hidden
    */
   static readonly overrides: any = /* #__PURE__ */ ParallelCoordinatesController.overrides;
 }

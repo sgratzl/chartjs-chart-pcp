@@ -12,7 +12,7 @@ export class PCPScale extends CategoryScale {
   static readonly id = 'pcp';
 
   /**
-   * @internal
+   * @hidden
    */
   static readonly defaults = CategoryScale.defaults;
 }
