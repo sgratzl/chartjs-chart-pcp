@@ -22,7 +22,7 @@ export interface ILineSegmentProps {
 
 export class LineSegment extends Element<ILineSegmentProps & AnyObject, ILineSegmentOptions & AnyObject> {
   /**
-   * @internal
+   * @hidden
    */
   // eslint-disable-next-line class-methods-use-this
   _getLineParts(props: Pick<ILineSegmentProps, 'x' | 'y' | 'x1' | 'y1'>): { d: number; k: number } {
@@ -33,7 +33,7 @@ export class LineSegment extends Element<ILineSegmentProps & AnyObject, ILineSeg
   }
 
   /**
-   * @internal
+   * @hidden
    */
   inRange(mouseX: number, mouseY: number, useFinalPosition: boolean): boolean {
     const props = this.getProps(['x', 'x1', 'y', 'y1'], useFinalPosition) as unknown as ILineSegmentProps;
@@ -51,7 +51,7 @@ export class LineSegment extends Element<ILineSegmentProps & AnyObject, ILineSeg
   }
 
   /**
-   * @internal
+   * @hidden
    */
   tooltipPosition(useFinalPosition: boolean): { x: number; y: number; padding: number } {
     const props = this.getProps(['x', 'x1', 'y', 'y1'], useFinalPosition) as unknown as ILineSegmentProps;
@@ -63,7 +63,7 @@ export class LineSegment extends Element<ILineSegmentProps & AnyObject, ILineSeg
   }
 
   /**
-   * @internal
+   * @hidden
    */
   getCenterPoint(useFinalPosition: boolean): { x: number; y: number } {
     const props = this.getProps(['x', 'x1', 'y', 'y1'], useFinalPosition) as unknown as ILineSegmentProps;
@@ -74,7 +74,7 @@ export class LineSegment extends Element<ILineSegmentProps & AnyObject, ILineSeg
   }
 
   /**
-   * @internal
+   * @hidden
    */
   inXRange(mouseX: number, useFinalPosition: boolean): boolean {
     const props = this.getProps(['x', 'x1'], useFinalPosition) as unknown as ILineSegmentProps;
@@ -83,7 +83,7 @@ export class LineSegment extends Element<ILineSegmentProps & AnyObject, ILineSeg
   }
 
   /**
-   * @internal
+   * @hidden
    */
   inYRange(mouseY: number, useFinalPosition: boolean): boolean {
     const props = this.getProps(['y', 'y1'], useFinalPosition) as unknown as ILineSegmentProps;
@@ -92,7 +92,7 @@ export class LineSegment extends Element<ILineSegmentProps & AnyObject, ILineSeg
   }
 
   /**
-   * @internal
+   * @hidden
    */
   draw(ctx: CanvasRenderingContext2D): void {
     const props = this.getProps([
@@ -133,7 +133,7 @@ export class LineSegment extends Element<ILineSegmentProps & AnyObject, ILineSeg
   static readonly id = 'lineSegment';
 
   /**
-   * @internal
+   * @hidden
    */
   static readonly defaults = /* #__PURE__ */ {
     ...LineElement.defaults,
@@ -144,12 +144,12 @@ export class LineSegment extends Element<ILineSegmentProps & AnyObject, ILineSeg
   };
 
   /**
-   * @internal
+   * @hidden
    */
   static readonly defaultRoutes = LineElement.defaultRoutes;
 
   /**
-   * @internal
+   * @hidden
    */
   static readonly descriptors = (LineElement as any).descriptors;
 }

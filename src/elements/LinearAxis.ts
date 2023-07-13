@@ -120,12 +120,12 @@ export class LogarithmicAxis extends LogarithmicScale<ILogarithmicAxisOptions> {
   static readonly id = 'logarithmicAxis';
 
   /**
-   * @internal
+   * @hidden
    */
   static readonly defaults: any = /* #__PURE__ */ merge({}, [defaults.scale, LogarithmicScale.defaults, scaleDefaults]);
 
   /**
-   * @internal
+   * @hidden
    */
   static readonly descriptors = /* #__PURE__ */ LinearAxis.descriptors;
 
@@ -134,7 +134,7 @@ export class LogarithmicAxis extends LogarithmicScale<ILogarithmicAxisOptions> {
   }
 
   /**
-   * @internal
+   * @hidden
    */
   // eslint-disable-next-line class-methods-use-this
   _computeLabelArea(): void {
@@ -142,14 +142,14 @@ export class LogarithmicAxis extends LogarithmicScale<ILogarithmicAxisOptions> {
   }
 
   /**
-   * @internal
+   * @hidden
    */
   update(): number {
     return LinearAxis.prototype.update.call(this);
   }
 
   /**
-   * @internal
+   * @hidden
    */
   draw(c: unknown): void {
     return LinearAxis.prototype.draw.call(this, c);
