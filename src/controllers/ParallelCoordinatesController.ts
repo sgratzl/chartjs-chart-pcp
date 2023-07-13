@@ -33,19 +33,19 @@ export class ParallelCoordinatesController extends DatasetController<
   LinearAxis & Element<AnyObject, AnyObject>
 > {
   /**
-   * @internal
+   * @hidden
    */
   declare datasetElementType: ChartComponent;
 
   /**
-   * @internal
+   * @hidden
    */
   declare dataElementType: ChartComponent;
 
   private declare _type: string;
 
   /**
-   * @internal
+   * @hidden
    */
   initialize(): void {
     super.initialize();
@@ -53,7 +53,7 @@ export class ParallelCoordinatesController extends DatasetController<
   }
 
   /**
-   * @internal
+   * @hidden
    */
   linkScales(): void {
     const ds = this.getDataset() as any;
@@ -68,7 +68,7 @@ export class ParallelCoordinatesController extends DatasetController<
   }
 
   /**
-   * @internal
+   * @hidden
    */
   addElements(): void {
     super.addElements();
@@ -90,7 +90,7 @@ export class ParallelCoordinatesController extends DatasetController<
   }
 
   /**
-   * @internal
+   * @hidden
    */
   update(mode: UpdateMode): void {
     // from front to back
@@ -112,7 +112,7 @@ export class ParallelCoordinatesController extends DatasetController<
   }
 
   /**
-   * @internal
+   * @hidden
    */
   draw(): void {
     // from back to front
@@ -136,7 +136,7 @@ export class ParallelCoordinatesController extends DatasetController<
   }
 
   /**
-   * @internal
+   * @hidden
    */
   updateAxis(axis: LinearAxis & Element<AnyObject, AnyObject>, mode: UpdateMode): void {
     const meta = this._cachedMeta;
@@ -158,7 +158,7 @@ export class ParallelCoordinatesController extends DatasetController<
   }
 
   /**
-   * @internal
+   * @hidden
    */
   updateElements(
     rectangles: (LineSegment & Element<AnyObject, AnyObject>)[],
@@ -232,7 +232,7 @@ export class ParallelCoordinatesController extends DatasetController<
   }
 
   /**
-   * @internal
+   * @hidden
    */
   removeBaseHoverStyle(
     element: LineSegment & Element<AnyObject, AnyObject>,
@@ -243,7 +243,7 @@ export class ParallelCoordinatesController extends DatasetController<
   }
 
   /**
-   * @internal
+   * @hidden
    */
   removeHoverStyle(element: LineSegment & Element<AnyObject, AnyObject>, datasetIndex: number, index: number): void {
     super.removeHoverStyle(element, datasetIndex, index);
@@ -257,14 +257,14 @@ export class ParallelCoordinatesController extends DatasetController<
   }
 
   /**
-   * @internal
+   * @hidden
    */
   setBaseHoverStyle(element: LineSegment & Element<AnyObject, AnyObject>, datasetIndex: number, index: number): void {
     super.setHoverStyle(element, datasetIndex, index);
   }
 
   /**
-   * @internal
+   * @hidden
    */
   setHoverStyle(element: LineSegment & Element<AnyObject, AnyObject>, datasetIndex: number, index: number): void {
     super.setHoverStyle(element, datasetIndex, index);
@@ -280,7 +280,7 @@ export class ParallelCoordinatesController extends DatasetController<
   static readonly id: string = 'pcp';
 
   /**
-   * @internal
+   * @hidden
    */
   static readonly defaults: any = /* #__PURE__ */ {
     datasetElementType: LinearAxis.id,
@@ -294,7 +294,7 @@ export class ParallelCoordinatesController extends DatasetController<
   };
 
   /**
-   * @internal
+   * @hidden
    */
   static readonly overrides: any = /* #__PURE__ */ {
     scales: {
