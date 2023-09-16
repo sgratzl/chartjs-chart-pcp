@@ -31,8 +31,8 @@ export class LogarithmicParallelCoordinatesController extends ParallelCoordinate
 }
 
 export interface ILogarithmicParallelCoordinatesControllerDatasetOptions
-  extends ControllerDatasetOptions,
-    ILogarithmicAxisOptions,
+  extends Omit<ControllerDatasetOptions, 'clip'>,
+    Omit<ILogarithmicAxisOptions, 'backgroundColor'>,
     ScriptableAndArrayOptions<ILineSegmentOptions, ScriptableContext<'logarithmicPcp'>>,
     ScriptableAndArrayOptions<CommonHoverOptions, ScriptableContext<'logarithmicPcp'>> {
   stack: string;
