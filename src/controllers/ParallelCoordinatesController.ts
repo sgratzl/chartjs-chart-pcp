@@ -330,7 +330,7 @@ export class ParallelCoordinatesController extends DatasetController<
 
 export interface IParallelCoordinatesControllerDatasetOptions
   extends Omit<ControllerDatasetOptions, 'clip'>,
-    Omit<ILinearAxisOptions,'backgroundColor'>,
+    Omit<ILinearAxisOptions, 'backgroundColor'>,
     ScriptableAndArrayOptions<ILineSegmentOptions, ScriptableContext<'pcp'>>,
     ScriptableAndArrayOptions<CommonHoverOptions, ScriptableContext<'pcp'>> {
   stack: string;
