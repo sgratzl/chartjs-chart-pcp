@@ -170,7 +170,8 @@ export class ParallelCoordinatesController extends DatasetController<
     const meta = this._cachedMeta as unknown as IExtendedChartMeta;
 
     const firstOpts = this.resolveDataElementOptions(start, mode);
-    const sharedOptions = this.getSharedOptions(firstOpts) ?? {};
+    const dummyShared = {};
+    const sharedOptions = this.getSharedOptions(firstOpts) ?? dummyShared;
     const includeOptions = this.includeOptions(mode, sharedOptions);
     const getPoint = (metaIndex: number, index: number, defaultValue: { x: number; y: number }) => {
       const m = meta._metas[metaIndex];
@@ -192,7 +193,7 @@ export class ParallelCoordinatesController extends DatasetController<
     this.updateSharedOptions(sharedOptions, mode, firstOpts);
 
     for (let i = start; i < start + count; i += 1) {
-      const options = this.resolveDataElementOptions(i, mode);
+      const options = sharedOptions === dummyShared ? this.resolveDataElementOptions(i, mode) : sharedOptions;
 
       const xy = getPoint(meta._metaIndex, i, { x: 0, y: 0 });
       const xyPrevious = getPoint(meta._metaIndex - 1, i, xy);
@@ -218,7 +219,7 @@ export class ParallelCoordinatesController extends DatasetController<
       }
 
       if (includeOptions) {
-        properties.options = (sharedOptions || options) as any;
+        properties.options = options;
       }
       this.updateElement(rectangles[i], i, properties, mode);
     }
