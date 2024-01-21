@@ -48,4 +48,4 @@ const config = {
 
 Two new elements were added: `lineSegment` as a subclass of line for a line segment between two axes and `linearAxis` for representing the vertical axis as a wrapper around a linear scale.
 
-see [ILineSegmentOptions](/api/interfaces/interface.ILineSegmentOptions.html) and [ILinearAxisOptions](/api/type-aliases/type-alias.ILinearAxisOptions.html)
+see [ILineSegmentOptions](/api/interfaces/ILineSegmentOptions.html) and [ILinearAxisOptions](/api/type-aliases/ILinearAxisOptions.html)
