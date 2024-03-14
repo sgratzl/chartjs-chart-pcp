@@ -1,7 +1,7 @@
 {
   "name": "chartjs-chart-pcp",
   "description": "Chart.js module for charting parallel coordinate plots",
-  "version": "4.2.8",
+  "version": "4.3.0",
   "author": {
     "name": "Samuel Gratzl",
     "email": "sam@sgratzl.com",
