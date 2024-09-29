@@ -5,7 +5,7 @@ import { LogarithmicParallelCoordinatesController } from './LogarithmicParallelC
 import mtcars from './__tests__/mtcars';
 import { LineSegment, LinearAxis, LogarithmicAxis } from '../elements';
 import { PCPScale } from '../scales';
-
+import { describe, beforeAll, test } from 'vitest';
 describe('pcp', () => {
   beforeAll(() => {
     registry.addControllers(ParallelCoordinatesController, LogarithmicParallelCoordinatesController);

@@ -36,6 +36,7 @@ export interface IAxisProps {
 const scaleDefaults = {
   axis: 'y',
   // a dummy scriptable option to enforce a context environment
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   dummyOption: (_ctx: unknown) => 0,
   axisWidth: 10,
   position: 'right',
@@ -85,7 +86,6 @@ export class LinearAxis extends LinearScale<ILinearAxisOptions> {
     return r as any;
   }
 
-  // eslint-disable-next-line class-methods-use-this
   _computeLabelArea(): void {
     return undefined;
   }
@@ -136,7 +136,7 @@ export class LogarithmicAxis extends LogarithmicScale<ILogarithmicAxisOptions> {
   /**
    * @hidden
    */
-  // eslint-disable-next-line class-methods-use-this
+
   _computeLabelArea(): void {
     return undefined;
   }
