@@ -14,7 +14,7 @@ export class PCPScale extends CategoryScale {
   /**
    * @hidden
    */
-  static readonly defaults = CategoryScale.defaults;
+  static readonly defaults: any = CategoryScale.defaults;
 }
 
 declare module 'chart.js' {
