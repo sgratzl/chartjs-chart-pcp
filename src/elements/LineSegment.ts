@@ -24,7 +24,7 @@ export class LineSegment extends Element<ILineSegmentProps & AnyObject, ILineSeg
   /**
    * @hidden
    */
-  // eslint-disable-next-line class-methods-use-this
+
   _getLineParts(props: Pick<ILineSegmentProps, 'x' | 'y' | 'x1' | 'y1'>): { d: number; k: number } {
     // y = x * k + d
     const k = (props.y1 - props.y) / (props.x1 - props.x);
