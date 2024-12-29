@@ -42,7 +42,7 @@ export class ParallelCoordinatesController extends DatasetController<
    */
   declare dataElementType: ChartComponent;
 
-  private declare _type: string;
+  declare private _type: string;
 
   /**
    * @hidden
